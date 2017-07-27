@@ -1,0 +1,24 @@
+{
+    "tipoDocumental": "Acta",
+    "templateKey": "acta",
+    "subTipoDocumental": "demandaLitigios",
+    "ruta": "@numeroSiniestro/Expediente Legal/Litigios/Documentos",
+    "checklistrelacionado": "CHKLST_LEG_LITG_002",
+    "fields": [{
+            "type": "string",
+            "fieldKey": "folioActa",
+            "required": false
+        }, {
+            "type": "string",
+            "fieldKey": "tipoActa",
+            "required": false
+        }, {
+            "type": "string",
+            "fieldKey": "asunto",
+            "required": false
+        },{
+            "type": "date",
+            "fieldKey": "fechaExpedicion",
+            "required": false
+        }]
+}

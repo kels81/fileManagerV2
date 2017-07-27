@@ -1,0 +1,24 @@
+{
+    "tipoDocumental": "Acta",
+    "templateKey": "acta",
+    "subTipoDocumental": "contestacionReclamacionUNE",
+    "ruta": "@numeroSiniestro/Expediente Legal/UNE/Documentos",
+    "checklistrelacionado": "CHKLST_LEG_UNE_003",
+    "fields": [{
+            "type": "string",
+            "fieldKey": "folioActa",
+            "required": false
+        }, {
+            "type": "string",
+            "fieldKey": "tipoActa",
+            "required": false
+        }, {
+            "type": "string",
+            "fieldKey": "asunto",
+            "required": false
+        },{
+            "type": "date",
+            "fieldKey": "fechaExpedicion",
+            "required": false
+        }]
+}

@@ -1,0 +1,20 @@
+{
+    "tipoDocumental": "Acta",
+    "templateKey": "acta",
+    "subTipoDocumental": "oficioLiberacionVehiculo",
+    "ruta": "@numeroSiniestro/Expediente Robo/Documentos",
+    "checklistrelacionado": "CHKLST_RB_001 CHKLST_RBPP_002 CHKLST_RBPP_003 CHKLST_PAG_PT_006 CHKLST_IND_ROB_007 CHKLST_ADCO_PT_019 CHKLST_ADCO_INDR_020 CHKLST_SLV_ROB_001 CHKLST_PORT_VENDROB_006",
+    "fields": [{
+            "type": "string",
+            "fieldKey": "folioActa",
+            "required": false
+        }, {
+            "type": "string",
+            "fieldKey": "tipoActa",
+            "required": false
+        }, {
+            "type": "date",
+            "fieldKey": "fechaExpedicion",
+            "required": false
+        }]
+}

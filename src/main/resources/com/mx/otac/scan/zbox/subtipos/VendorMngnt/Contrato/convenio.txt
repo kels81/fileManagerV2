@@ -1,0 +1,20 @@
+{
+    "tipoDocumental": "Contrato",
+    "templateKey": "contrato",
+    "subTipoDocumental": "convenio",
+    "ruta": "Proveedores/@tipoProveedor/@idProveedor/@tipoOficina",
+    "checklistrelacionado": "CHKLST_VNDMG_PCRPF CHKLST_VNDMG_PCRPM CHKLST_VNDMG_PTPA",
+    "fields": [{
+            "type": "string",
+            "fieldKey": "tipoContrato",
+            "required": false
+        }, {
+            "type": "string",
+            "fieldKey": "asunto",
+            "required": false
+        }, {
+            "type": "date",
+            "fieldKey": "fechaContrato",
+            "required": false
+        }]
+}

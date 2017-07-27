@@ -1,0 +1,28 @@
+{
+    "tipoDocumental": "Documento Legal",
+    "templateKey": "documentoLegal",
+    "subTipoDocumental": "documentacionAdicionalCasoLitigios",
+    "ruta": "@numeroSiniestro/Expediente Legal/Litigios/Documentos",
+    "checklistrelacionado": "CHKLST_LEG_LITG_002",
+    "fields": [{
+            "type": "date",
+            "fieldKey": "fechaExpedicion",
+            "required": false
+        }, {
+            "type": "string",
+            "fieldKey": "tipoDocumentoLegal",
+            "required": false
+        }, {
+            "type": "string",
+            "fieldKey": "folioCaso",
+            "required": false
+        }, {
+            "type": "string",
+            "fieldKey": "asunto",
+            "required": false
+        },  {
+            "type": "string",
+            "fieldKey": "ejecutante",
+            "required": false
+        }]
+}

@@ -1,0 +1,16 @@
+{
+    "tipoDocumental": "Acta",
+    "templateKey": "acta",
+    "subTipoDocumental": "poderNotariadoRepresentanteLegal",
+    "ruta": "Proveedores/@tipoProveedor/@idProveedor/@tipoOficina",
+    "checklistrelacionado": "CHKLST_VNDMG_PCRPM CHKLST_VNDMG_PNRPM CHKLST_VNDMG_PTPA",
+    "fields": [{
+            "type": "string",
+            "fieldKey": "tipoEvento",
+            "required": false
+        }, {
+            "type": "date",
+            "fieldKey": "fechaExpedicion",
+            "required": false
+        }]
+}

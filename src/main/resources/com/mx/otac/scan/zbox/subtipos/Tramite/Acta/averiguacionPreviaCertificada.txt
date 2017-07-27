@@ -1,0 +1,28 @@
+{
+    "tipoDocumental": "Acta",
+    "templateKey": "acta",
+    "subTipoDocumental": "averiguacionPreviaCertificada",
+    "ruta": "@numeroSiniestro/Tramite/@incidente/@tipoTramitePago/@idUnicoTramite/@costCategory/Documentos",
+    "checklistrelacionado": "CHKLST_IND_ROB_007 CHKLST_REM_OBJP_031",
+    "fields": [{
+            "type": "string",
+            "fieldKey": "folioActa",
+            "required": false
+        }, {
+            "type": "string",
+            "fieldKey": "tipoActa",
+            "required": false
+        }, {
+            "type": "date",
+            "fieldKey": "fechaActa",
+            "required": false
+        }, {
+            "type": "string",
+            "fieldKey": "motivoAveriguacion",
+            "required": false
+        }, {
+            "type": "string",
+            "fieldKey": "beneficiario",
+            "required": false
+        }]
+}

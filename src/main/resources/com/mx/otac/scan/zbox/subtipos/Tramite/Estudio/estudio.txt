@@ -1,0 +1,28 @@
+{
+    "tipoDocumental": "Estudio",
+    "templateKey": "estudio",
+    "subTipoDocumental": "estudio",
+    "ruta": "@numeroSiniestro/Tramite/@incidente/@tipoTramitePago/@idUnicoTramite/@costCategory/Documentos",
+    "checklistrelacionado": "CHKLST_REM_GML_012 CHKLST_REM_GM_014 CHKLST_RC_GM_033",
+    "fields": [{
+            "type": "string",
+            "fieldKey": "tipoEstudio",
+            "required": false
+        }, {
+            "type": "date",
+            "fieldKey": "fechaEstudio",
+            "required": false
+        }, {
+            "type": "string",
+            "fieldKey": "institucion",
+            "required": false
+        }, {
+            "type": "string",
+            "fieldKey": "beneficiario",
+            "required": false
+        }, {
+            "type": "string",
+            "fieldKey": "cobertura",
+            "required": false
+        }]
+}

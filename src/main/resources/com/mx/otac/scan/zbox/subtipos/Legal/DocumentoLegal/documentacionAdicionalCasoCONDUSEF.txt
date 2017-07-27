@@ -1,0 +1,28 @@
+{
+    "tipoDocumental": "Documento Legal",
+    "templateKey": "documentoLegal",
+    "subTipoDocumental": "documentacionAdicionalCasoCONDUSEF",
+    "ruta": "@numeroSiniestro/Expediente Legal/CONDUSEF/Documentos",
+    "checklistrelacionado": "CHKLST_LEG_COND_001",
+    "fields": [{
+            "type": "date",
+            "fieldKey": "fechaExpedicion",
+            "required": false
+        }, {
+            "type": "string",
+            "fieldKey": "tipoDocumentoLegal",
+            "required": false
+        }, {
+            "type": "string",
+            "fieldKey": "folioCaso",
+            "required": false
+        }, {
+            "type": "string",
+            "fieldKey": "asunto",
+            "required": false
+        },  {
+            "type": "string",
+            "fieldKey": "ejecutante",
+            "required": false
+        }]
+}

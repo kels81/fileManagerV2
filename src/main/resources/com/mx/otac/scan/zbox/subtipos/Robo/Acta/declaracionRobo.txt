@@ -1,0 +1,20 @@
+{
+    "tipoDocumental": "Acta",
+    "templateKey": "acta",
+    "subTipoDocumental": "declaracionRobo",
+    "ruta": "@numeroSiniestro/Expediente Robo/Documentos",
+    "checklistrelacionado": "CHKLST_RB_001 CHKLST_PORT_VENDROB_006",
+    "fields": [{
+            "type": "string",
+            "fieldKey": "folioActa",
+            "required": false
+        }, {
+            "type": "string",
+            "fieldKey": "tipoActa",
+            "required": false
+        }, {
+            "type": "date",
+            "fieldKey": "fechaExpedicion",
+            "required": false
+        }]
+}

@@ -1,0 +1,20 @@
+{
+    "tipoDocumental": "Acta",
+    "templateKey": "acta",
+    "subTipoDocumental": "oficioLiberacionCopia",
+    "ruta": "@numeroSiniestro/Expediente Legal/Asistencia Legal/Documentos",
+    "checklistrelacionado": "CHKLST_LEG_ALEG_004 CHKLST_PORT_VENDALEG_007",
+    "fields": [{
+            "type": "string",
+            "fieldKey": "folioActa",
+            "required": false
+        }, {
+            "type": "string",
+            "fieldKey": "tipoActa",
+            "required": false
+        }, {
+            "type": "date",
+            "fieldKey": "fechaExpedicion",
+            "required": false
+        }]
+}

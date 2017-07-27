@@ -1,0 +1,16 @@
+{
+    "tipoDocumental": "Anexos",
+    "templateKey": "anexo",
+    "subTipoDocumental": "anexo",
+    "ruta": "Proveedores/@tipoProveedor/@idProveedor/@tipoOficina",
+    "checklistrelacionado": "CHKLST_VNDMG_PCRPF CHKLST_VNDMG_PCRPM",
+    "fields": [{
+            "type": "string",
+            "fieldKey": "tipoEvento",
+            "required": false
+        }, {
+            "type": "date",
+            "fieldKey": "fechaAnexo",
+            "required": false
+        }]
+}
