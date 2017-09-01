@@ -1,0 +1,2 @@
+# Module com.mx.zoom.filebox.DashboardWidgetSet
+# RPC service class, partial path of RPC policy file

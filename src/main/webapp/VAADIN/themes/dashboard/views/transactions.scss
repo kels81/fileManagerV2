@@ -2,7 +2,7 @@
 
   .transactions {
     .viewheader {
-      padding: $view-padding;
+      padding: round($view-padding / 2);
       border-bottom: valo-border($strength: 0.5);
     }
   }

@@ -1,0 +1,9 @@
+@import "variables.scss";
+@import "metro.scss";
+
+.metro {
+   @include metro;
+}
+
+
+//@include v-font(MyIcons, '../../../../dashboard/fonts_myIcons/Flaticon');

@@ -1,8 +1,0 @@
-Suptipo Documental = Costo de Adquisicion
-Numero Siniestro = 19771691
-Numero Poliza = 972599
-Numero de Folio = 2016090655
-Asegurado = DAVID ENCISO DE LA VEGA
-Costo de Adquisicion = $49.778
-Numero Serie = 3N6DD25T1BK045946
-Anio  = 2011
