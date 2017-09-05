@@ -13138,11 +13138,10 @@ div.v-layout.v-horizontal.v-widget {
 	padding-bottom: 18.5px;
 	padding-left: 18.5px;
 	padding-right: 18.5px;
-	overflow: visible;
 }
 
 .metro .schedule .catalog .mainPanel {
-	padding: 16px;
+	padding: 8px;
 }
 
 .metro .schedule .catalog .mainPanel .frame {
@@ -13156,9 +13155,16 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .metro .schedule .catalog .mainPanel .frame .labelInfo {
-	width: 120px;
 	font-size: 14px;
 	line-height: 1.2;
+}
+
+.metro .schedule .catalog[width-range~="0-700px"] .mainPanel {
+	width: 100% !important;
+}
+
+.metro .schedule .catalog[width-range~="701px-"] .mainPanel {
+	width: 20% !important;
 }
 
 .metro .attachedlayout {

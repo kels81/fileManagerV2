@@ -11737,11 +11737,10 @@ div.v-layout.v-horizontal.v-widget {
 	padding-bottom: 12.5px;
 	padding-left: 12.5px;
 	padding-right: 12.5px;
-	overflow: visible;
 }
 
 .dashboard .schedule .catalog .mainPanel {
-	padding: 16px;
+	padding: 6px;
 }
 
 .dashboard .schedule .catalog .mainPanel .frame {
@@ -11755,9 +11754,16 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .dashboard .schedule .catalog .mainPanel .frame .labelInfo {
-	width: 120px;
 	font-size: 14px;
 	line-height: 1.2;
+}
+
+.dashboard .schedule .catalog[width-range~="0-700px"] .mainPanel {
+	width: 100% !important;
+}
+
+.dashboard .schedule .catalog[width-range~="701px-"] .mainPanel {
+	width: 20% !important;
 }
 
 .dashboard .attachedlayout {

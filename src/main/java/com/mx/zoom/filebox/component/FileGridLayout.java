@@ -61,7 +61,7 @@ public class FileGridLayout extends CssLayout implements LayoutClickListener {
         this.viewLogicFile = mosaicoFileLogic;
         this.viewLogicDirectory = mosaicoDirectoryLogic;
         this.file = file;
-
+        
         addStyleName("mainPanel");
         addComponent(buildFrame());
     }
@@ -72,7 +72,7 @@ public class FileGridLayout extends CssLayout implements LayoutClickListener {
         frame.setMargin(true);
         frame.addStyleName(ValoTheme.LAYOUT_CARD);
         //frame.setWidth(175.0f, Unit.PIXELS);
-        frame.setWidthUndefined();
+        frame.setWidth("100%");
         frame.addLayoutClickListener(this);
         frame.addComponent(buildMosaico());
 

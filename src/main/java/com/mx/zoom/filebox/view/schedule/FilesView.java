@@ -231,9 +231,8 @@ public final class FilesView extends Panel implements View {
 //        contentFiles.setSizeFull();
         CssLayout catalog = new CssLayout();
         catalog.addStyleName("catalog");
-        //catalog.setSizeUndefined();
         catalog.setWidth("100%");
-        
+        Responsive.makeResponsive(catalog);
 
         File currentDir = new File(path.getAbsolutePath());
         List<File> files = (List<File>) component.directoryContents(currentDir);
