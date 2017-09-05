@@ -86,7 +86,7 @@ public class FileGridLayout extends CssLayout implements LayoutClickListener {
         mosaicoLayout = new HorizontalLayout();
         //mosaicoLayout.setSpacing(true);
         //mosaicoLayout.setDescription(file.getName());
-        
+
         Component icon = buildIcon();
         Component details = buildFileDetails();
         mosaicoLayout.addComponent(icon);
@@ -99,8 +99,10 @@ public class FileGridLayout extends CssLayout implements LayoutClickListener {
 
     private Image buildIcon() {
         icon = new Image(null, getIconExtension());
-        icon.setWidth(50.0f, Unit.PIXELS);
-        icon.setHeight(55.0f, Unit.PIXELS);
+//        icon.setWidth(50.0f, Unit.PIXELS);
+//        icon.setHeight(55.0f, Unit.PIXELS);
+        icon.setWidth(55.0f, Unit.PIXELS);
+        icon.setHeight(60.0f, Unit.PIXELS);
         return icon;
     }
 
@@ -119,12 +121,12 @@ public class FileGridLayout extends CssLayout implements LayoutClickListener {
 
     private ThemeResource findExtension(String extension) {
         String formato = "desconocido";
-        
-        List <String[]> allFileFormats = new ArrayList<>();
+
+        List<String[]> allFileFormats = new ArrayList<>();
         for (FileFormats fileFormats : FileFormats.values()) {
             allFileFormats.add(fileFormats.getArrayFileFormats());
         }
-        
+
         for (String[] array : allFileFormats) {
             if (ArrayUtils.contains(array, extension)) {
                 formato = FileFormats.values()[allFileFormats.indexOf(array)].toString().toLowerCase();
@@ -151,10 +153,11 @@ public class FileGridLayout extends CssLayout implements LayoutClickListener {
         String name = file.getName();
         name = (name.length() > 18 ? name.substring(0, 16) + "..." : name);
         fileName = new Label(name);
-        fileName.addStyleName(ValoTheme.LABEL_TINY);
+        fileName.addStyleName("labelInfo");
+        //fileName.addStyleName(ValoTheme.LABEL_TINY);
         fileName.addStyleName(ValoTheme.LABEL_BOLD);
         fileName.setReadOnly(true);
-        fileName.setWidth(104.0f, Unit.PIXELS);
+        //fileName.setWidth(120.0f, Unit.PIXELS);
         return fileName;
     }
 
@@ -169,9 +172,10 @@ public class FileGridLayout extends CssLayout implements LayoutClickListener {
                 : fileSizeDisplay);
 
         numberOfElementsAndFileSize = new Label(label);
-        numberOfElementsAndFileSize.addStyleName(ValoTheme.LABEL_TINY);
+        numberOfElementsAndFileSize.addStyleName("labelInfo");
+        //numberOfElementsAndFileSize.addStyleName(ValoTheme.LABEL_TINY);
         numberOfElementsAndFileSize.setReadOnly(true);
-        
+
         return numberOfElementsAndFileSize;
     }
 
@@ -220,7 +224,11 @@ public class FileGridLayout extends CssLayout implements LayoutClickListener {
         MenuItem zip = menu.addItem("Zip", e -> {
             Path source = Paths.get(file.getAbsolutePath());
 
-            viewLogicFile.zipFile(source, file);
+            if (file.isDirectory()) {
+                viewLogicDirectory.zipDirectory(source, file);
+            } else {
+                viewLogicFile.zipFile(source, file);
+            }
 
         });
         zip.setIcon(FontAwesome.FOURSQUARE);

@@ -231,7 +231,9 @@ public final class FilesView extends Panel implements View {
 //        contentFiles.setSizeFull();
         CssLayout catalog = new CssLayout();
         catalog.addStyleName("catalog");
-        catalog.setSizeUndefined();
+        //catalog.setSizeUndefined();
+        catalog.setWidth("100%");
+        
 
         File currentDir = new File(path.getAbsolutePath());
         List<File> files = (List<File>) component.directoryContents(currentDir);
@@ -244,6 +246,7 @@ public final class FilesView extends Panel implements View {
             catalog.addComponent(fileGrid);
         });
 
+        System.out.println("width: " + catalog.getWidthUnits());
 //        contentFiles.setContent(catalog);
         return catalog;
         //return contentFiles;

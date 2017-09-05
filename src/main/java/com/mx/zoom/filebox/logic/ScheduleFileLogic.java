@@ -86,24 +86,25 @@ public class ScheduleFileLogic implements Serializable {
         }
     }
 
-    public void zipFile(Path sourceDir, File inputFile) {
-        byte[] buf = new byte[1024];
+    public void zipFile(Path sourceFile, File fileToZip) {
+        
         try {
             // Create the ZIP file
-            String nameFile = FilenameUtils.getBaseName(inputFile.getName());
-            String fileZip = nameFile + ".zip";
-            ZipOutputStream out = new ZipOutputStream(new FileOutputStream(sourceDir.getParent().toString() + "\\" + fileZip));
+            String nameFile = FilenameUtils.getBaseName(fileToZip.getName());
+            String zipFileName = nameFile + ".zip";
+            ZipOutputStream out = new ZipOutputStream(new FileOutputStream(fileToZip.getParent() + "\\" + zipFileName));
 
             //for (int i = 0; i < source.length; i++) {
-            FileInputStream in = new FileInputStream(inputFile);
+            FileInputStream in = new FileInputStream(fileToZip);
 
             // Add ZIP entry to output stream.
-            out.putNextEntry(new ZipEntry(inputFile.getName()));
+            out.putNextEntry(new ZipEntry(fileToZip.getName()));
 
             // Transfer bytes from the file to the ZIP file
+            byte[] buffer = new byte[1024];
             int bytesRead;
-            while ((bytesRead = in.read(buf)) > 0) {
-                out.write(buf, 0, bytesRead);
+            while ((bytesRead = in.read(buffer)) > 0) {
+                out.write(buffer, 0, bytesRead);
             }
 
             // Complete the entry
@@ -117,9 +118,9 @@ public class ScheduleFileLogic implements Serializable {
             System.out.println("Done");
 
             // SE RECARGA LA PAGINA, PARA MOSTRAR EL ARCHIVO CARGADO
-            String dir = sourceDir.getParent().toString();
+            String dir = sourceFile.getParent().toString();
             cleanAndDisplay(new File(dir));
-            notification.createSuccess("Se comprimio el archivo correctamente: " + inputFile.getName());
+            notification.createSuccess("Se comprimio el archivo correctamente: " + fileToZip.getName());
         } catch (IOException ex) {
             notification.createFailure("No se comprimio el archivo");
         }

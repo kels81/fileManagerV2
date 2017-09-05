@@ -77,7 +77,7 @@ public class ConfirmWindow extends Window {
         body.setWidth(100.0f, Sizeable.Unit.PERCENTAGE);
         body.setMargin(true);
 
-        Label messageLbl = new Label("Â¿EstÃ¡ seguro de que desea eliminar este archivo?");
+        Label messageLbl = new Label("¿Está seguro de que desea eliminar este archivo?");
         //messageLbl.addStyleName(ValoTheme.LABEL_LIGHT);
         //messageLbl.addStyleName(ValoTheme.LABEL_H4);
 

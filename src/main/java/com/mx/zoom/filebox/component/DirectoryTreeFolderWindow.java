@@ -132,7 +132,8 @@ public class DirectoryTreeFolderWindow extends Window {
                 //ESTA VALIDACION ES PARA CUANDO SE QUIERE MOSTRAR CARPETA ROOT Y CARPETAS 
                 //DENTRO DE ELLA 1ER NIVEL
                 if (!directory.equals(Constantes.ROOT_PATH)) {
-                    createTreeContent(new File(event.getItemId().toString()), event);
+                    //createTreeContent(new File(event.getItemId().toString()), event);
+                    createTreeContent(new File(directory), event);
                 }
             }
         });
@@ -271,10 +272,8 @@ public class DirectoryTreeFolderWindow extends Window {
 
         if (!files.isEmpty()) {
             for (File file : files) {
-
-                Boolean allow = Boolean.FALSE;
-
                 //PARA SABER SI EL DIRECTORIO TIENE ADENTRO OTROS DIRECTORIOS Y PODER MOSTRAR LA FLECHA DE EXPANDIR
+                Boolean allow = Boolean.FALSE;
                 if (file.isDirectory() && file.list().length != 0) {
                     File[] subDirectory = file.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
                     allow = subDirectory.length != 0;

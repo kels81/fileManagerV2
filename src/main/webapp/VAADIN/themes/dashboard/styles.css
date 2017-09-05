@@ -11754,6 +11754,12 @@ div.v-layout.v-horizontal.v-widget {
 	background-color: #f5f5f5;
 }
 
+.dashboard .schedule .catalog .mainPanel .frame .labelInfo {
+	width: 120px;
+	font-size: 14px;
+	line-height: 1.2;
+}
+
 .dashboard .attachedlayout {
 	cursor: pointer;
 	position: relative;
