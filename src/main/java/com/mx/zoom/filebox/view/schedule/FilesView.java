@@ -50,6 +50,8 @@ public final class FilesView extends VerticalLayout implements View {
     private final VerticalLayout content;
     private HorizontalLayout rootPath;
     private Button btnFolder;
+    private Button btnListView;
+    private Button btnGridView;
     private Label lblArrow;
     private TextField txtSearch;
     private final Components component = new Components();
@@ -67,7 +69,7 @@ public final class FilesView extends VerticalLayout implements View {
     private FileGridLayout fileGrid;
     private FileListLayout fileList;
 
-    private final Boolean selected = false;
+    private Boolean selected = true;
 
     private Table table;
     private ThemeResource iconResource;
@@ -83,7 +85,7 @@ public final class FilesView extends VerticalLayout implements View {
         content = new VerticalLayout();
         content.addComponent(buildHeader());
         content.addComponent(buildToolBar(origenPath));
-        content.addComponent(buildViewsBar());
+        content.addComponent(buildViewsBar(origenPath));
 
         //directoryContent = buildGridView(origenPath);
         directoryContent = selectView(selected, origenPath);
@@ -138,12 +140,12 @@ public final class FilesView extends VerticalLayout implements View {
         return toolBar;
     }
 
-    private Component buildViewsBar() {
+    private Component buildViewsBar(File directory) {
         viewBar = new HorizontalLayout();
         viewBar.setWidth(100.0f, Sizeable.Unit.PERCENTAGE);
         viewBar.addStyleName("viewbar");
 
-        Component viewsButtons = buildViewsButtons();
+        Component viewsButtons = buildViewsButtons(directory);
 
         viewBar.addComponent(viewsButtons);
         viewBar.setComponentAlignment(viewsButtons, Alignment.MIDDLE_RIGHT);
@@ -182,22 +184,28 @@ public final class FilesView extends VerticalLayout implements View {
         return mainButtons;
     }
 
-    private Component buildViewsButtons() {
+    private Component buildViewsButtons(File directory) {
         viewButtons = new HorizontalLayout();
         //viewButtons.setSpacing(true);
 
-        Button btnListView = component.createButtonIconTiny();
+        btnListView = component.createButtonIconTiny();
         btnListView.setIcon(FontAwesome.TH_LIST);
+        btnListView.addStyleName(setStyle(selected));
+        btnListView.setEnabled(selected);
         btnListView.setDescription("Vista Lista");
         btnListView.addClickListener((ClickEvent event) -> {
-            Notification.show("Vista Lista");
+            selected = false;
+            cleanAndBuild(directory);
         });
 
-        Button btnGridView = component.createButtonIconTiny();
+        btnGridView = component.createButtonIconTiny();
         btnGridView.setIcon(FontAwesome.TH_LARGE);
+        btnGridView.addStyleName(setStyle(!selected));
+        btnGridView.setEnabled(!selected);
         btnGridView.setDescription("Vista Grid");
         btnGridView.addClickListener((ClickEvent event) -> {
-            Notification.show("Vista Grid");
+            selected = true;
+            cleanAndBuild(directory);
         });
 
 //        CssLayout group = new CssLayout(btnListView, btnGridView);
@@ -319,7 +327,7 @@ public final class FilesView extends VerticalLayout implements View {
         content.removeAllComponents();
         content.addComponent(buildHeader());
         content.addComponent(buildToolBar(directory));
-        content.addComponent(buildViewsBar());
+        content.addComponent(buildViewsBar(directory));
         //directoryContent = buildGridView(directory);
         directoryContent = selectView(selected, directory);
         content.addComponent(directoryContent);
@@ -415,6 +423,10 @@ public final class FilesView extends VerticalLayout implements View {
         });
 
         return uploader;
+    }
+    
+    private String setStyle(Boolean selected) {
+        return selected ? "borderButton" : "noBorderButton";
     }
     
     @Override
