@@ -42,7 +42,8 @@ import pl.exsio.plupload.PluploadError;
 import pl.exsio.plupload.PluploadFile;
 
 @SuppressWarnings("serial")
-public final class FilesView extends Panel implements View {
+//public final class FilesView extends Panel implements View {
+public final class FilesView extends VerticalLayout implements View {
 
     private File path;
     private final File origenPath;
@@ -62,14 +63,15 @@ public final class FilesView extends Panel implements View {
 
     private final ScheduleFileLogic viewLogicFile = new ScheduleFileLogic(this);
     private final ScheduleDirectoryLogic viewLogicDirectory = new ScheduleDirectoryLogic(this);
-    
+
     private FileGridLayout fileGrid;
     private FileListLayout fileList;
+
+    private final Boolean selected = false;
 
     private Table table;
     private ThemeResource iconResource;
     private Image icon;
-    private static final String[] DEFAULT_COLLAPSIBLE = {"fecha", "tamaño"};
 
     public FilesView() {
         this.origenPath = new File(Constantes.ROOT_PATH);
@@ -83,14 +85,18 @@ public final class FilesView extends Panel implements View {
         content.addComponent(buildToolBar(origenPath));
         content.addComponent(buildViewsBar());
 
-        directoryContent = displayDirectoryContents(origenPath);
+        //directoryContent = buildGridView(origenPath);
+        directoryContent = selectView(selected, origenPath);
         content.addComponent(directoryContent);
         content.setExpandRatio(directoryContent, 1);
 
         //progressBar.setCaption("Progress");
         //addComponent(progressBar);
-        setContent(content);
-//        addComponent(content);
+        //[ GRID VIEW ]
+        //setContent(content);
+        //[ LIST VIEW ]
+        addComponent(content);
+
         Responsive.makeResponsive(content);
     }
 
@@ -127,7 +133,7 @@ public final class FilesView extends Panel implements View {
 
         toolBar.addComponents(path, mainButtons);
         toolBar.setExpandRatio(mainButtons, 1.0f);
-        toolBar.setComponentAlignment(mainButtons, Alignment.TOP_RIGHT);
+        toolBar.setComponentAlignment(mainButtons, Alignment.MIDDLE_RIGHT);
 
         return toolBar;
     }
@@ -140,7 +146,7 @@ public final class FilesView extends Panel implements View {
         Component viewsButtons = buildViewsButtons();
 
         viewBar.addComponent(viewsButtons);
-        viewBar.setComponentAlignment(viewsButtons, Alignment.TOP_RIGHT);
+        viewBar.setComponentAlignment(viewsButtons, Alignment.MIDDLE_RIGHT);
 
         return viewBar;
     }
@@ -178,11 +184,11 @@ public final class FilesView extends Panel implements View {
 
     private Component buildViewsButtons() {
         viewButtons = new HorizontalLayout();
-        viewButtons.setSpacing(true);
+        //viewButtons.setSpacing(true);
 
         Button btnListView = component.createButtonIconTiny();
         btnListView.setIcon(FontAwesome.TH_LIST);
-        btnListView.setDescription("Vista List");
+        btnListView.setDescription("Vista Lista");
         btnListView.addClickListener((ClickEvent event) -> {
             Notification.show("Vista Lista");
         });
@@ -197,7 +203,6 @@ public final class FilesView extends Panel implements View {
 //        CssLayout group = new CssLayout(btnListView, btnGridView);
 //        group.addStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
 //        viewButtons.addComponent(group);
-
         viewButtons.addComponents(btnListView, btnGridView);
 
         return viewButtons;
@@ -222,36 +227,59 @@ public final class FilesView extends Panel implements View {
         return rootPath;
     }
 
-    private Component displayDirectoryContents(File pathDirectory) {
-        path = pathDirectory;
-        //System.out.println("currentDir = " + path);
+    private Component selectView(Boolean selected, File pathDirectory) {
+        Component viewSelected = null;
+        if (selected) {
+            viewSelected = buildGridView(pathDirectory);
+        } else {
+            viewSelected = buildListView(pathDirectory);
+        }
 
-//        Panel contentFiles = new Panel();
-//        contentFiles.addStyleName(ValoTheme.PANEL_BORDERLESS);
-//        contentFiles.setSizeFull();
-        CssLayout catalog = new CssLayout();
-        catalog.addStyleName("catalog");
-        catalog.setWidth("100%");
-        Responsive.makeResponsive(catalog);
+        return viewSelected;
+    }
+
+    private Component buildGridView(File pathDirectory) {
+        path = pathDirectory;
+
+        CssLayout gridView = new CssLayout();
+        gridView.addStyleName("gridView");
+        gridView.setWidth(100.0f, Sizeable.Unit.PERCENTAGE);
+        Responsive.makeResponsive(gridView);
 
         File currentDir = new File(path.getAbsolutePath());
         List<File> files = (List<File>) component.directoryContents(currentDir);
 
-        //for (final File file : files) {
-        files.stream().map((file) -> {
-            fileGrid = new FileGridLayout(viewLogicFile, viewLogicDirectory, file);
-            return fileGrid;
-        }).forEach((fileGrid) -> {
-            catalog.addComponent(fileGrid);
-        });
+//        files.stream().map((file) -> {
+//            fileGrid = new FileGridLayout(viewLogicFile, viewLogicDirectory, file);
+//            return fileGrid;
+//        }).forEach((fileGrid) -> {
+//            gridView.addComponent(fileGrid);
+//        });
 
-        System.out.println("width: " + catalog.getWidthUnits());
-//        contentFiles.setContent(catalog);
-        return catalog;
-        //return contentFiles;
+        for (final File file : files) {
+            fileGrid = new FileGridLayout(viewLogicFile, viewLogicDirectory, file);
+            gridView.addComponent(fileGrid);
+        }
+
+
+        return gridView;
     }
 
-    public void displaySubDirectoryContents(File file) {
+    private Component buildListView(File pathDirectory) {
+//        VerticalLayout listView = new VerticalLayout();
+//        listView.setWidth(100.0f, Sizeable.Unit.PERCENTAGE);
+//        listView.addStyleName("listView");
+//        Responsive.makeResponsive(listView);
+//
+//        fileList = new FileListLayout(viewLogicFile, viewLogicDirectory, pathDirectory);
+//
+//        listView.addComponent(fileList);
+        
+        //return listView;
+        return new FileListLayout(viewLogicFile, viewLogicDirectory, pathDirectory);
+    }
+
+    public void displayDirectoryContents(File file) {
         String directory = nameDir(file, origenPath.getAbsolutePath());
         String[] arrayDirectories = directory.split("\\\\");
 
@@ -259,14 +287,14 @@ public final class FilesView extends Panel implements View {
             lblArrow = new Label(FontAwesome.ANGLE_RIGHT.getHtml(), ContentMode.HTML);
             lblArrow.addStyleName(ValoTheme.LABEL_COLORED);
             btnFolder = component.createButtonPath(lblDirectory);
-            btnFolder.addClickListener(e -> {
-                String newRoot = e.getComponent().getCaption();
+            btnFolder.addClickListener(event -> {
+                String newRoot = event.getComponent().getCaption();
                 String directorys = file.getAbsolutePath();
                 int inicio = directorys.indexOf(newRoot);
                 String dir = directorys.substring(0, inicio + newRoot.length());
 
                 cleanAndBuild(new File(dir));
-                displaySubDirectoryContents(new File(dir));
+                displayDirectoryContents(new File(dir));
 
             });
 
@@ -292,7 +320,8 @@ public final class FilesView extends Panel implements View {
         content.addComponent(buildHeader());
         content.addComponent(buildToolBar(directory));
         content.addComponent(buildViewsBar());
-        directoryContent = displayDirectoryContents(directory);
+        //directoryContent = buildGridView(directory);
+        directoryContent = selectView(selected, directory);
         content.addComponent(directoryContent);
         content.setExpandRatio(directoryContent, 1);
     }
@@ -336,8 +365,8 @@ public final class FilesView extends Panel implements View {
 
                 // SE RECARGA LA PAGINA, PARA MOSTRAR EL ARCHIVO CARGADO
                 cleanAndBuild(new File(uploadPath));
-                displaySubDirectoryContents(new File(uploadPath));
-                notification.createSuccess("Se cargÃ³ el archivo: " + file.getName());
+                displayDirectoryContents(new File(uploadPath));
+                notification.createSuccess("Se cargó el archivo: " + file.getName());
             }
         });
 
@@ -387,7 +416,7 @@ public final class FilesView extends Panel implements View {
 
         return uploader;
     }
-
+    
     @Override
     public void enter(final ViewChangeEvent event) {
     }

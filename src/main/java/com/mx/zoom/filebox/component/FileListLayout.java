@@ -5,17 +5,27 @@
  */
 package com.mx.zoom.filebox.component;
 
+import com.google.common.eventbus.Subscribe;
+import com.mx.zoom.filebox.event.DashboardEvent.BrowserResizeEvent;
+import com.mx.zoom.filebox.event.DashboardEventBus;
+import com.mx.zoom.filebox.logic.ScheduleDirectoryLogic;
 import com.mx.zoom.filebox.logic.ScheduleFileLogic;
 import com.mx.zoom.filebox.utils.Components;
+import com.mx.zoom.filebox.utils.FileFormats;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.event.ItemClickEvent;
 import com.vaadin.navigator.View;
-import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.server.Page;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.ThemeResource;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Image;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.Align;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import java.io.File;
 import java.io.IOException;
@@ -23,135 +33,212 @@ import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  *
  * @author Edrd
  */
-public class FileListLayout extends Table {
+//public class FileListLayout extends Table {
+public class FileListLayout extends VerticalLayout implements View {
 
-    private final File file;
+    private File file;
     private ThemeResource iconResource;
     private Image icon;
     private final Components component = new Components();
-    private final ScheduleFileLogic viewLogic;
 
-    public static final String[] DEFAULT_COLLAPSIBLE = {"fecha", "tamaño"};
+    Object selectedItemInTheRow;
 
-    public FileListLayout(ScheduleFileLogic listaFileLogic, File file) {
-        this.viewLogic = listaFileLogic;
-        this.file = file;
+    private IndexedContainer idxCont;
+    private Table table;
+
+    private final ScheduleFileLogic viewLogicFile;
+    private final ScheduleDirectoryLogic viewLogicDirectory;
+
+    private final String COL_FILE = "file";
+    private final String COL_ICON = "icon";
+    private final String COL_NOMBRE = "nombre";
+    private final String COL_TAMANIO = "tamanio";
+    private final String COL_MODIFICADO = "modificado";
+
+    public final Object[] COLUMNS_VISIBLES = {COL_ICON, COL_NOMBRE, COL_TAMANIO, COL_MODIFICADO};
+    public final String[] COLUMNS_HEADERS = {"", "Nombre", "Tamaño", "Modificado"};
+    public static final String[] DEFAULT_COLLAPSIBLE = {"tamanio", "modificado"};
+
+    public FileListLayout(ScheduleFileLogic mosaicoFileLogic, ScheduleDirectoryLogic mosaicoDirectoryLogic, File file) {
+        this.viewLogicFile = mosaicoFileLogic;
+        this.viewLogicDirectory = mosaicoDirectoryLogic;
 
         setSizeFull();
-        addStyleName(ValoTheme.TABLE_BORDERLESS);
-        addStyleName(ValoTheme.TABLE_NO_STRIPES);
-        addStyleName(ValoTheme.TABLE_NO_VERTICAL_LINES);
-        addStyleName(ValoTheme.TABLE_SMALL);
-        setSelectable(false);
-        setImmediate(true);
-        setSortEnabled(false);
-        
-        //setColumnAlignment("tamaño", Align.RIGHT);
-        //setColumnAlignment("fecha", Align.RIGHT);
-        setColumnHeader("icon", "");
-        setColumnHeader("nombre", "Nombre");
-        setColumnHeader("fecha", "Fecha Creación");
-        setColumnHeader("tamaño", "Tamaño");
+        addStyleName("listView");
+        DashboardEventBus.register(this);   //NECESARIO PARA CONOCER LA ORIENTACION Y RESIZE DEL BROWSER
 
-        //PARA HACER RESPONSIVO LA TABLA
-        setColumnCollapsingAllowed(true);
-        setColumnCollapsible("nombre", false);
-
-        setColumnExpandRatio("nombre", 0.60f );   
-        setColumnExpandRatio("fecha", 0.20f );
-        setColumnExpandRatio("tamaño", 0.20f );
-        refreshRowCache();
-        //setRowHeaderMode(Table.RowHeaderMode.INDEX);          //PARA ENUMERAR LAS FILAS
-        setContainerDataSource(crearContenedor());
+        addComponent(buildTable(file));
+        //System.out.println("width-->" + Page.getCurrent().getBrowserWindowWidth());
+        //System.out.println("height-->" + Page.getCurrent().getBrowserWindowHeight());
+    }
+    
+    //METODO NECESARIO PARA CONOCER LA ORIENTACION Y RESIZE DEL BROWSER
+    @Override
+    public void detach() {
+        super.detach();
+        // A new instance of TransactionsView is created every time it's
+        // navigated to so we'll need to clean up references to it on detach.
+        DashboardEventBus.unregister(this);
     }
 
-//    private boolean defaultColumnsVisible() {
-//        boolean result = true;
-//        for (String propertyId : DEFAULT_COLLAPSIBLE) {
-//            System.out.println("propertyId = " + propertyId);
-//            if (isColumnCollapsed(propertyId) == Page.getCurrent()
-//                    .getBrowserWindowWidth() < 800) {
-//                result = false;
-//            }
-//        }
-//        return result;
-//    }
-//
-//    @Subscribe
-//    public void browserResized(final BrowserResizeEvent event) {
-//        // Some columns are collapsed when browser window width gets small
-//        // enough to make the table fit better.
-//        if (defaultColumnsVisible()) {
-//            for (String propertyId : DEFAULT_COLLAPSIBLE) {
-//                System.out.println("propertyId2 = " + propertyId);
-//                setColumnCollapsed(propertyId, Page.getCurrent()
-//                        .getBrowserWindowWidth() < 800);
-//            }
-//        }
-//    }
+    private Table buildTable(File file) {
+        table = new Table();
+        table.setContainerDataSource(crearContenedor(file));
+        table.setSizeFull();
+        table.setPageLength(8);
+        table.setImmediate(true);
+        table.setSelectable(true);
+        table.setMultiSelect(true);
+        table.addStyleName(ValoTheme.TABLE_BORDERLESS);
+        table.addStyleName(ValoTheme.TABLE_NO_STRIPES);
+        table.addStyleName(ValoTheme.TABLE_NO_VERTICAL_LINES);
+        table.addStyleName(ValoTheme.TABLE_SMALL);
+        table.addStyleName("noselect");
 
-    public IndexedContainer crearContenedor() {
+        table.setVisibleColumns(COLUMNS_VISIBLES);
+        table.setColumnHeaders(COLUMNS_HEADERS);
 
-        IndexedContainer idxCont = new IndexedContainer();
+        table.setSortEnabled(false);
+        table.setColumnAlignment(COL_MODIFICADO, Align.RIGHT);
+        //setColumnAlignment(COL_TAMANIO, Align.RIGHT);
 
-        idxCont.addContainerProperty("icon", Image.class, "");
-        idxCont.addContainerProperty("nombre", Button.class, "");
-        idxCont.addContainerProperty("fecha", String.class, "");
-        idxCont.addContainerProperty("tamaño", String.class, "");
+        //PARA HACER RESPONSIVO LA TABLA
+        table.setColumnCollapsingAllowed(true);
+        table.setColumnCollapsible(COL_NOMBRE, false);
 
-        List<File> files = component.directoryContents(file);
+        table.setColumnExpandRatio(COL_NOMBRE, 0.60f);
+        table.setColumnExpandRatio(COL_MODIFICADO, 0.20f);
+        table.setColumnExpandRatio(COL_TAMANIO, 0.20f);
+        table.refreshRowCache();
+        //setRowHeaderMode(Table.RowHeaderMode.INDEX);          //PARA ENUMERAR LAS FILAS
+
+        //setContainerDataSource(new BeanItemContainer<>(crearContenedorFile(file)));
+        table.addItemClickListener(new ItemClickEvent.ItemClickListener() {
+            @Override
+            public void itemClick(ItemClickEvent event) {
+                if (event.getItem() != null) {
+                    File file = new File(event.getItem().getItemProperty(COL_FILE).getValue().toString());
+                    if (event.isDoubleClick()) {
+                        //table.select(selectedItemInTheRow);
+                        if (file.isDirectory()) {
+                            viewLogicFile.cleanAndDisplay(file);
+                        } else if (file.isFile()) {
+                            Notification.show("Ver archivo: " + file.getName());
+                            //downloadContents(file);
+//                        Window w = new ViewerWindow(file);;
+//                        UI.getCurrent().addWindow(w);
+//                        w.focus();
+                        }
+                    }
+                }
+
+            }
+        });
+
+        return table;
+    }
+
+    private IndexedContainer crearContenedor(File directory) {
+        idxCont = new IndexedContainer();
+
+        idxCont.addContainerProperty(COL_FILE, File.class, "");
+        idxCont.addContainerProperty(COL_ICON, Image.class, "");
+        idxCont.addContainerProperty(COL_NOMBRE, Label.class, "");
+        idxCont.addContainerProperty(COL_MODIFICADO, String.class, "");
+        idxCont.addContainerProperty(COL_TAMANIO, String.class, "");
+
+        List<File> files = component.directoryContents(directory);
 
         if (!files.isEmpty()) {
-            for (File file : files) {
-                String fileSize = FileUtils.byteCountToDisplaySize(file.length());
+            for (File fileRow : files) {
+                this.file = fileRow;
 
                 Item item = idxCont.getItem(idxCont.addItem());
-                item.getItemProperty("icon").setValue(buildIcon(file));
-                item.getItemProperty("nombre").setValue(buildButtonLink(file));
-                item.getItemProperty("fecha").setValue(getAtributos());
-                item.getItemProperty("tamaño").setValue(fileSize);
+                item.getItemProperty(COL_FILE).setValue(file);
+                item.getItemProperty(COL_ICON).setValue(buildIcon());
+                item.getItemProperty(COL_NOMBRE).setValue(getFileName());
+                item.getItemProperty(COL_MODIFICADO).setValue(getAtributos());
+                item.getItemProperty(COL_TAMANIO).setValue(getNumberOfElementsAndFileSize());
             }
         }
 
         return idxCont;
     }
 
-    private Image buildIcon(File file) {
-        icon = new Image(null, getIconExtension(file));
+//    private List<File> crearContenedorFile(File directory) {
+//        List<File> files = component.directoryContents(directory);
+//        return files;
+//    }
+    private Image buildIcon() {
+        icon = new Image(null, getIconExtension());
         icon.setWidth(30.0f, Unit.PIXELS);
         icon.setHeight(31.0f, Unit.PIXELS);
         return icon;
     }
 
-    private ThemeResource getIconExtension(File file) {
+    private ThemeResource getIconExtension() {
 
         String extension = FilenameUtils.getExtension(file.getPath()).toLowerCase();
         if (file.isDirectory()) {
             iconResource = new ThemeResource("img/file_manager/folder_" + (file.list().length == 0 ? "empty" : "full") + ".png");
         } else {
-            iconResource = new ThemeResource("img/file_manager/" + extension + ".png");
+            //documento
+            //iconResource = new ThemeResource("img/file_manager/" + extension + ".png");
+            iconResource = findExtension(extension);
         }
         return iconResource;
     }
-    
-    private Button buildButtonLink(File file){
-        Button btnLink = new Button(file.getName());
-        btnLink.addStyleName(ValoTheme.BUTTON_BORDERLESS);
-        btnLink.addStyleName(ValoTheme.BUTTON_SMALL);
-        btnLink.addStyleName(ValoTheme.BUTTON_LINK);
-        
-        return btnLink;
+
+    private ThemeResource findExtension(String extension) {
+        String formato = "desconocido";
+
+        List<String[]> allFileFormats = new ArrayList<>();
+        for (FileFormats fileFormats : FileFormats.values()) {
+            allFileFormats.add(fileFormats.getArrayFileFormats());
+        }
+
+        for (String[] array : allFileFormats) {
+            if (ArrayUtils.contains(array, extension)) {
+                formato = FileFormats.values()[allFileFormats.indexOf(array)].toString().toLowerCase();
+                break;
+            }
+        }
+
+        return new ThemeResource("img/file_manager/" + formato + ".png");
     }
-    
-     private String getAtributos() {
+
+    private Label getFileName() {
+        Label lblName = new Label(file.getName());
+        lblName.addStyleName(ValoTheme.LABEL_BOLD);
+        lblName.addStyleName("noselect");
+        
+        return lblName;
+    }
+
+    private String getNumberOfElementsAndFileSize() {
+        long fileSize = file.length();
+        String fileSizeDisplay = FileUtils.byteCountToDisplaySize(fileSize);
+        String elementos = (file.isDirectory()
+                ? String.valueOf(file.list().length == 0
+                        ? "" : file.list().length) + (file.list().length > 1
+                        ? " elementos" : file.list().length == 0
+                                ? "vacío" : " elemento")
+                : fileSizeDisplay);
+
+        return elementos;
+    }
+
+    private String getAtributos() {
         String fechaCreacion = "";
         try {
             BasicFileAttributes attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
@@ -164,5 +251,31 @@ public class FileListLayout extends Table {
         return fechaCreacion;
     }
 
-    
+    @Subscribe
+    public void browserResized(final BrowserResizeEvent event) {
+        // Some columns are collapsed when browser window width gets small
+        // enough to make the table fit better.
+        if (defaultColumnsVisible()) {
+            for (String propertyId : DEFAULT_COLLAPSIBLE) {
+                table.setColumnCollapsed(propertyId, Page.getCurrent()
+                        .getBrowserWindowWidth() < 800);
+            }
+        }
+    }
+
+    private boolean defaultColumnsVisible() {
+        boolean result = true;
+        for (String propertyId : DEFAULT_COLLAPSIBLE) {
+            if (table.isColumnCollapsed(propertyId) == Page.getCurrent()
+                    .getBrowserWindowWidth() < 800) {
+                result = false;
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public void enter(ViewChangeListener.ViewChangeEvent event) {
+    }
+
 }

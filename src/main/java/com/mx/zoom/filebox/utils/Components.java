@@ -97,7 +97,7 @@ public class Components {
         Button btn = new Button();
         btn.addStyleName(ValoTheme.BUTTON_TINY);
         btn.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
-        //btn.addStyleName("color1");    //like primary
+        btn.addStyleName("viewbutton");
         //btnFolder.setEnabled(false);
         return btn;
     }
@@ -113,7 +113,7 @@ public class Components {
     public Button createButtonPath(String caption) {
         Button btn = new Button(caption);
         btn.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
-        btn.addStyleName(ValoTheme.BUTTON_SMALL);
+        //btn.addStyleName(ValoTheme.BUTTON_SMALL);
         //btnFolder.setEnabled(false);
         return btn;
     }

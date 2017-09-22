@@ -171,11 +171,7 @@ public class ScheduleDirectoryLogic {
     public void cleanAndDisplay(File file) {
         // SE RECARGA LA PAGINA, PARA MOSTRAR EL ARCHIVO CARGADO
         this.view.cleanAndBuild(file);
-        this.view.displaySubDirectoryContents(file);
-    }
-
-    public void displaySubdirectory(File file) {
-        this.view.displaySubDirectoryContents(file);
+        this.view.displayDirectoryContents(file);
     }
 
 }

@@ -16,8 +16,10 @@ import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
+import com.vaadin.server.Sizeable;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -52,6 +54,9 @@ public class FileGridLayout extends CssLayout implements LayoutClickListener {
 
     private Label fileName;
     private Label numberOfElementsAndFileSize;
+    
+//    private Button fileName;
+//    private Button numberOfElementsAndFileSize;
 
     private final ScheduleFileLogic viewLogicFile;
     private final ScheduleDirectoryLogic viewLogicDirectory;
@@ -71,13 +76,12 @@ public class FileGridLayout extends CssLayout implements LayoutClickListener {
         frame.addStyleName("frame");
         frame.setMargin(true);
         frame.addStyleName(ValoTheme.LAYOUT_CARD);
-        //frame.setWidth(175.0f, Unit.PIXELS);
-        frame.setWidth("100%");
+        frame.setWidth(100.0f, Sizeable.Unit.PERCENTAGE);
         frame.addLayoutClickListener(this);
         frame.addComponent(buildMosaico());
 
         ContextMenu contextMenu = new ContextMenu(this, false);
-        fillMenu(contextMenu, file);
+        createMenu(contextMenu, file);
         contextMenu.setAsContextMenuOf(frame);
         return frame;
     }
@@ -154,10 +158,14 @@ public class FileGridLayout extends CssLayout implements LayoutClickListener {
         name = (name.length() > 18 ? name.substring(0, 16) + "..." : name);
         fileName = new Label(name);
         fileName.addStyleName("labelInfo");
-        //fileName.addStyleName(ValoTheme.LABEL_TINY);
+        fileName.addStyleName("noselect");
         fileName.addStyleName(ValoTheme.LABEL_BOLD);
-        fileName.setReadOnly(true);
-        //fileName.setWidth(120.0f, Unit.PIXELS);
+        //fileName.setReadOnly(true);
+        
+//        fileName = new Button(name);
+//        fileName.addStyleName(ValoTheme.BUTTON_SMALL);
+//        fileName.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+        
         return fileName;
     }
 
@@ -173,13 +181,18 @@ public class FileGridLayout extends CssLayout implements LayoutClickListener {
 
         numberOfElementsAndFileSize = new Label(label);
         numberOfElementsAndFileSize.addStyleName("labelInfo");
-        //numberOfElementsAndFileSize.addStyleName(ValoTheme.LABEL_TINY);
-        numberOfElementsAndFileSize.setReadOnly(true);
+        numberOfElementsAndFileSize.addStyleName("noselect");
+        numberOfElementsAndFileSize.addStyleName(ValoTheme.LABEL_TINY);
+        //numberOfElementsAndFileSize.setReadOnly(true);
+        
+//        numberOfElementsAndFileSize = new Button(label);
+//        numberOfElementsAndFileSize.addStyleName(ValoTheme.BUTTON_TINY);
+//        numberOfElementsAndFileSize.addStyleName(ValoTheme.BUTTON_BORDERLESS);
 
         return numberOfElementsAndFileSize;
     }
 
-    private void fillMenu(ContextMenu menu, File file) {
+    private void createMenu(ContextMenu menu, File file) {
         //DESCARGAR
         MenuItem descargar = menu.addItem("Descargar", e -> {
             Notification.show("descargar");

@@ -13039,6 +13039,24 @@ div.v-layout.v-horizontal.v-widget {
 	white-space: nowrap;
 }
 
+.metro .v-button-mybutton-table {
+	font-weight: normal;
+	color: #434343;
+}
+
+.metro .v-button-viewbutton {
+	background: #eee none repeat scroll 0 0;
+	border: 1px solid #b0b0b0;
+	border-radius: 0;
+	color: #181818;
+	cursor: pointer;
+	font-weight: 400;
+	outline: medium none;
+	position: relative;
+	text-align: center;
+	white-space: nowrap;
+}
+
 .metro .loginview {
 	background-color: #fff;
 	background-image: -webkit-radial-gradient(50% 50%, circle, #fafafa, #fafafa);
@@ -13134,37 +13152,45 @@ div.v-layout.v-horizontal.v-widget {
 	padding-right: 18.5px;
 }
 
-.metro .schedule .catalog {
+.metro .schedule .gridView {
 	padding-bottom: 18.5px;
 	padding-left: 18.5px;
 	padding-right: 18.5px;
 }
 
-.metro .schedule .catalog .mainPanel {
+.metro .schedule .gridView .mainPanel {
 	padding: 8px;
 }
 
-.metro .schedule .catalog .mainPanel .frame {
+.metro .schedule .gridView .mainPanel .frame {
 	cursor: pointer;
 	padding: 11px;
 }
 
-.metro .schedule .catalog .mainPanel .frame:hover {
+.metro .schedule .gridView .mainPanel .frame:hover {
 	border-color: #0072C6;
 	background-color: #f5f5f5;
 }
 
-.metro .schedule .catalog .mainPanel .frame .labelInfo {
+.metro .schedule .gridView .mainPanel .frame .labelInfo {
 	font-size: 14px;
 	line-height: 1.2;
+	padding: 0 10px;
 }
 
-.metro .schedule .catalog[width-range~="0-700px"] .mainPanel {
+.metro .schedule .gridView[width-range~="0-700px"] .mainPanel {
 	width: 100% !important;
 }
 
-.metro .schedule .catalog[width-range~="701px-"] .mainPanel {
+.metro .schedule .gridView[width-range~="701px-"] .mainPanel {
 	width: 20% !important;
+}
+
+.metro .schedule .listView {
+	padding-top: 11px;
+	padding-bottom: 18.5px;
+	padding-left: 18.5px;
+	padding-right: 18.5px;
 }
 
 .metro .attachedlayout {
@@ -13276,6 +13302,56 @@ div.v-layout.v-horizontal.v-widget {
 .metro .v-widget.mytoken.tokenfield .v-csslayout .v-button-link {
 	margin: 0 1px 1px 0;
 	height: 37px;
+}
+
+.metro .v-table-header {
+	color: #434343;
+	background: #fff;
+}
+
+.metro .v-table-caption-container, .metro .v-table-header-drag {
+	border-left: 1px solid #f8f8f8;
+}
+
+.metro .v-table {
+	background: #fff;
+}
+
+.metro .v-table-table {
+	background: #fff;
+}
+
+.metro .v-table-row:hover, .metro .v-table-row-odd:hover {
+	background: #F6FAFD;
+}
+
+.metro .v-table-cell-wrapper {
+	user-select: none;
+	-o-user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+}
+
+.metro .v-table-focus {
+	outline: 1px solid #F6FAFD;
+}
+
+.metro .v-table-compact .v-table-cell-content, .metro .v-table-small .v-table-cell-content {
+	height: 50px;
+}
+
+.metro .v-table tr.v-selected.v-selected {
+	color: #434343;
+	background: #E8F3FA;
+}
+
+.metro .v-label-noselect {
+	user-select: none;
+	-o-user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
 }
 
 .metro .transactions .viewheader {

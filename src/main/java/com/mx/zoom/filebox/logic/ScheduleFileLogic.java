@@ -135,48 +135,11 @@ public class ScheduleFileLogic implements Serializable {
         cleanAndDisplay(new File(dir));
         notification.createSuccess("Se cargó con éxito");
     }
-    
-    
-    
- //DIRECTORY METHODS
-//    public void moveDirectory(Path sourceDir, Path targetDir, File file) {
-//        try {
-//            //Files.move(sourceDir, targetDir, StandardCopyOption.REPLACE_EXISTING);  //REEMPLAZAR EXISTENTE
-//            Files.move(sourceDir, targetDir);
-//            // SE RECARGA LA PAGINA, PARA MOSTRAR EL ARCHIVO CARGADO
-//            String dir = sourceDir.getParent().toString();
-//            cleanAndDisplay(new File(dir));
-//            notification.createSuccess("Se movio el archivo correctamente: " + file.getName());
-//        } catch (FileAlreadyExistsException ex) {
-//            notification.createFailure("Ya existe un archivo con el mismo nombre en esta carpeta");
-//        } catch (IOException ex) {
-//            notification.createFailure("Problemas al mover el archivo");
-//        }
-//    }
-//    
-//    public void renameDirectory(Path sourceDir, File oldFile, File newFile) {
-//        System.out.println("rename directory");
-//        try {
-//            oldFile.renameTo(newFile);
-//            // SE RECARGA LA PAGINA, PARA MOSTRAR EL ARCHIVO CARGADO
-//            String dir = sourceDir.getParent().toString();
-//            cleanAndDisplay(new File(dir));
-//            notification.createSuccess("Se renombró el archivo correctamente: " + oldFile.getName());
-//        } catch (Exception ex) {
-//            notification.createFailure("No se renombró el archivo");
-//        }
-//    }
-    
-    
 
     public void cleanAndDisplay(File file) {
         // SE RECARGA LA PAGINA, PARA MOSTRAR EL ARCHIVO CARGADO
         this.view.cleanAndBuild(file);
-        this.view.displaySubDirectoryContents(file);
-    }
-    
-    public void displaySubdirectory(File file) {
-        this.view.displaySubDirectoryContents(file);
+        this.view.displayDirectoryContents(file);
     }
 
 }

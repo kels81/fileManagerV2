@@ -11733,37 +11733,45 @@ div.v-layout.v-horizontal.v-widget {
 	padding-right: 12.5px;
 }
 
-.dashboard .schedule .catalog {
+.dashboard .schedule .gridView {
 	padding-bottom: 12.5px;
 	padding-left: 12.5px;
 	padding-right: 12.5px;
 }
 
-.dashboard .schedule .catalog .mainPanel {
+.dashboard .schedule .gridView .mainPanel {
 	padding: 6px;
 }
 
-.dashboard .schedule .catalog .mainPanel .frame {
+.dashboard .schedule .gridView .mainPanel .frame {
 	cursor: pointer;
 	padding: 7px;
 }
 
-.dashboard .schedule .catalog .mainPanel .frame:hover {
+.dashboard .schedule .gridView .mainPanel .frame:hover {
 	border-color: #197de1;
 	background-color: #f5f5f5;
 }
 
-.dashboard .schedule .catalog .mainPanel .frame .labelInfo {
+.dashboard .schedule .gridView .mainPanel .frame .labelInfo {
 	font-size: 14px;
 	line-height: 1.2;
+	padding: 0 10px;
 }
 
-.dashboard .schedule .catalog[width-range~="0-700px"] .mainPanel {
+.dashboard .schedule .gridView[width-range~="0-700px"] .mainPanel {
 	width: 100% !important;
 }
 
-.dashboard .schedule .catalog[width-range~="701px-"] .mainPanel {
+.dashboard .schedule .gridView[width-range~="701px-"] .mainPanel {
 	width: 20% !important;
+}
+
+.dashboard .schedule .listView {
+	padding-top: 7px;
+	padding-bottom: 12.5px;
+	padding-left: 12.5px;
+	padding-right: 12.5px;
 }
 
 .dashboard .attachedlayout {
@@ -11875,6 +11883,56 @@ div.v-layout.v-horizontal.v-widget {
 .dashboard .v-widget.mytoken.tokenfield .v-csslayout .v-button-link {
 	margin: 0 1px 1px 0;
 	height: 37px;
+}
+
+.dashboard .v-table-header {
+	color: #434343;
+	background: #fff;
+}
+
+.dashboard .v-table-caption-container, .dashboard .v-table-header-drag {
+	border-left: 1px solid #f8f8f8;
+}
+
+.dashboard .v-table {
+	background: #fff;
+}
+
+.dashboard .v-table-table {
+	background: #fff;
+}
+
+.dashboard .v-table-row:hover, .dashboard .v-table-row-odd:hover {
+	background: #F6FAFD;
+}
+
+.dashboard .v-table-cell-wrapper {
+	user-select: none;
+	-o-user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+}
+
+.dashboard .v-table-focus {
+	outline: 1px solid #F6FAFD;
+}
+
+.dashboard .v-table-compact .v-table-cell-content, .dashboard .v-table-small .v-table-cell-content {
+	height: 50px;
+}
+
+.dashboard .v-table tr.v-selected.v-selected {
+	color: #434343;
+	background: #E8F3FA;
+}
+
+.dashboard .v-label-noselect {
+	user-select: none;
+	-o-user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
 }
 
 .dashboard .transactions .viewheader {
