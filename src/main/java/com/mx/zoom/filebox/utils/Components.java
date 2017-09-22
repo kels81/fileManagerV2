@@ -89,7 +89,7 @@ public class Components {
         Button btn = new Button(caption);
         btn.addStyleName(ValoTheme.BUTTON_SMALL);
         btn.addStyleName(ValoTheme.BUTTON_PRIMARY);
-        //btnFolder.setEnabled(false);
+        //btn.setEnabled(false);
         return btn;
     }
     
@@ -97,8 +97,7 @@ public class Components {
         Button btn = new Button();
         btn.addStyleName(ValoTheme.BUTTON_TINY);
         btn.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
-        btn.addStyleName("viewbutton");
-        //btnFolder.setEnabled(false);
+        //btn.setEnabled(false);
         return btn;
     }
     
@@ -106,7 +105,7 @@ public class Components {
         Button btn = new Button(caption);
         btn.addStyleName(ValoTheme.BUTTON_SMALL);
         btn.addStyleName("mybutton");
-        //btnFolder.setEnabled(false);
+        //btn.setEnabled(false);
         return btn;
     }
 
@@ -114,7 +113,7 @@ public class Components {
         Button btn = new Button(caption);
         btn.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
         //btn.addStyleName(ValoTheme.BUTTON_SMALL);
-        //btnFolder.setEnabled(false);
+        //btn.setEnabled(false);
         return btn;
     }
 
