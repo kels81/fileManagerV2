@@ -427,16 +427,28 @@
         text-align: center;
         white-space: nowrap;
     }
-    
+
     .v-button-mybutton-table {
         font-weight: normal;
         color: #434343;
-        
+
     }
-    
-    .v-button-viewbutton{
+
+    .v-button-borderButton {
         background: #eee none repeat scroll 0 0;
         border: 1px solid #b0b0b0;
+        border-radius: 0;
+        color: #181818;
+        cursor: pointer;
+        font-weight: 400;
+        outline: medium none;
+        position: relative;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    .v-button-noBorderButton {
+        border: 1px solid #f0f0f0;
         border-radius: 0;
         color: #181818;
         cursor: pointer;
