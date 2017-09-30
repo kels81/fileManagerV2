@@ -138,8 +138,7 @@ public class ScheduleFileLogic implements Serializable {
 
     public void cleanAndDisplay(File file) {
         // SE RECARGA LA PAGINA, PARA MOSTRAR EL ARCHIVO CARGADO
-        this.view.cleanAndBuild(file);
-        this.view.displayDirectoryContents(file);
+        this.view.cleanAndDisplay(file);
     }
 
 }

@@ -1,0 +1,109 @@
+.dashboard .notifications.v-window {
+	overflow: visible !important;
+	right: 25px;
+	left: auto !important;
+	max-width: 90%;
+	-webkit-transform-origin: 234px -7px;
+	-moz-transform-origin: 234px -7px;
+	-ms-transform-origin: 234px -7px;
+	-o-transform-origin: 234px -7px;
+	transform-origin: 234px -7px;
+}
+
+.dashboard .notifications.v-window.v-window-animate-in {
+	-webkit-animation: animate-in-scale-up 260ms cubic-bezier(0.68, 0.37, 0.51, 1.37);
+	-moz-animation: animate-in-scale-up 260ms cubic-bezier(0.68, 0.37, 0.51, 1.37);
+	animation: animate-in-scale-up 260ms cubic-bezier(0.68, 0.37, 0.51, 1.37);
+}
+
+.dashboard .notifications.v-window:before, .dashboard .notifications.v-window:after {
+	content: "";
+	position: absolute;
+	top: -14px;
+	right: 62px;
+	border: 7px solid #892c2c00;
+	width: 0;
+	height: 0;
+	border-bottom-color: white;
+}
+
+
+.dashboard .notifications.v-window:before {
+	top: -17px;
+	margin-right: -1px;
+	/*! border-width: 8px; */
+	/*! border-bottom-width: 8px; */
+	border-bottom-color: rgba(0, 0, 0, 0.09098);
+}
+
+right: 25px;
+left: auto !important;
+
+
+
+.dashboard .v-tooltip {
+	background-color: rgba(50, 50, 50, 0.9);
+	-webkit-box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+	color: white;
+	padding: 5px 9px;
+	border-radius: 3px;
+	max-width: 35em;
+	overflow: hidden !important;
+	font-size: 14px;
+}
+
+.dashboard .v-tooltip div[style*="width"] {
+	width: auto !important;
+}
+
+
+[***** MIS ESTILOS TOOLTIP INI *****]
+.dashboard .v-tooltip::before, .dashboard .v-tooltip::after {
+    content: "";
+    position: absolute;
+    top: -14px;
+    right: 44px;
+    border: 7px solid #892c2c00;
+        border-bottom-color: rgba(137, 44, 44, 0);
+    width: 0;
+    height: 0;
+    border-bottom-color: white;
+}
+
+.dashboard .v-tooltip {
+    background-color: white;
+    -webkit-box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+    color: black;
+    padding: 5px 9px;
+    border-radius: 3px;
+    max-width: 35em;
+    overflow: visible !important;
+    font-size: 14px;
+    right: 25px;
+    left: auto !important;
+}
+
+[***** MIS ESTILOS TOOLTIP FIN *****]
+
+.dashboard .notifications.v-window .v-window-header {
+	color: #197de1;
+}
+
+.dashboard .notifications.v-window .v-window-outerheader:after, .dashboard .notifications.v-window .v-scrollable:before {
+	display: none;
+}
+
+.dashboard .notifications.v-window .notification-item {
+	font-size: 14px;
+}
+
+.dashboard .notifications.v-window .notification-title {
+	font-weight: 500;
+}
+
+.dashboard .notifications.v-window .notification-time {
+	font-size: 13px;
+	color: gray;
+}

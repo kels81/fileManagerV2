@@ -19,7 +19,6 @@ import com.vaadin.server.Page;
 import com.vaadin.server.Sizeable;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -269,7 +268,6 @@ public class FileGridLayout extends CssLayout implements LayoutClickListener {
         //if (event.getButton() == MouseEventDetails.MouseButton.LEFT) {
         if (event.isDoubleClick()) {
             if (file.isDirectory()) {
-                System.out.println("hacer click");
                 viewLogicFile.cleanAndDisplay(file);
             } else if (file.isFile()) {
                 Notification.show("Ver archivo: " + file.getName());

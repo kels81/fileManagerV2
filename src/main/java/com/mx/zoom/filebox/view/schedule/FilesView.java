@@ -1,5 +1,6 @@
 package com.mx.zoom.filebox.view.schedule;
 
+import com.google.common.collect.Lists;
 import com.mx.zoom.filebox.component.EmailWindow;
 import com.mx.zoom.filebox.component.FileGridLayout;
 import com.mx.zoom.filebox.component.FileListLayout;
@@ -19,7 +20,6 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -27,7 +27,6 @@ import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
@@ -36,6 +35,8 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import pl.exsio.plupload.Plupload;
 import pl.exsio.plupload.PluploadError;
@@ -130,7 +131,7 @@ public final class FilesView extends VerticalLayout implements View {
         toolBar.setSpacing(true);
         toolBar.addStyleName("toolbar");
 
-        Component path = buildPath();
+        Component path = buildPath(directory);
         Component mainButtons = buildMainButtons(directory);
 
         toolBar.addComponents(path, mainButtons);
@@ -195,7 +196,7 @@ public final class FilesView extends VerticalLayout implements View {
         btnListView.setDescription("Vista Lista");
         btnListView.addClickListener((ClickEvent event) -> {
             selected = false;
-            cleanAndBuild(directory);
+            cleanAndDisplay(directory);
         });
 
         btnGridView = component.createButtonIconTiny();
@@ -205,7 +206,7 @@ public final class FilesView extends VerticalLayout implements View {
         btnGridView.setDescription("Vista Grid");
         btnGridView.addClickListener((ClickEvent event) -> {
             selected = true;
-            cleanAndBuild(directory);
+            cleanAndDisplay(directory);
         });
 
 //        CssLayout group = new CssLayout(btnListView, btnGridView);
@@ -216,22 +217,26 @@ public final class FilesView extends VerticalLayout implements View {
         return viewButtons;
     }
 
-    private Component buildPath() {
+    private Component buildPath(File directory) {
         rootPath = new HorizontalLayout();
-        //rootPath.setWidth(100.0f, Sizeable.Unit.PERCENTAGE);
-        //rootPath.setSpacing(true);
-        //rootPath.addStyleName("barPath");
 
-        Button button = component.createButtonPath("Archivos");
-        button.addClickListener(new ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                cleanAndBuild(origenPath);
+        List<File> listDirectories = getListDirectories(directory);
+        int i = 1;
+        for (File fileDirectory : listDirectories) {
+            btnFolder = component.createButtonPath(fileDirectory.getName());
+            btnFolder.addClickListener(event -> {
+                //System.out.println("evnt: "+event.getComponent().getCaption());
+                cleanAndDisplay(fileDirectory);
+            });
+            rootPath.addComponent(btnFolder);
+            if (i != listDirectories.size()) {
+                lblArrow = new Label(FontAwesome.ANGLE_RIGHT.getHtml(), ContentMode.HTML);
+                lblArrow.addStyleName(ValoTheme.LABEL_COLORED);
+                rootPath.addComponent(lblArrow);
+                rootPath.setComponentAlignment(lblArrow, Alignment.MIDDLE_CENTER);
             }
-        });
-
-        rootPath.addComponent(button);
-
+            i++;
+        }
         return rootPath;
     }
 
@@ -263,12 +268,10 @@ public final class FilesView extends VerticalLayout implements View {
 //        }).forEach((fileGrid) -> {
 //            gridView.addComponent(fileGrid);
 //        });
-
         for (final File file : files) {
             fileGrid = new FileGridLayout(viewLogicFile, viewLogicDirectory, file);
             gridView.addComponent(fileGrid);
         }
-
 
         return gridView;
     }
@@ -282,53 +285,36 @@ public final class FilesView extends VerticalLayout implements View {
 //        fileList = new FileListLayout(viewLogicFile, viewLogicDirectory, pathDirectory);
 //
 //        listView.addComponent(fileList);
-        
+
         //return listView;
         return new FileListLayout(viewLogicFile, viewLogicDirectory, pathDirectory);
     }
 
-    public void displayDirectoryContents(File file) {
-        String directory = nameDir(file, origenPath.getAbsolutePath());
-        String[] arrayDirectories = directory.split("\\\\");
-
-        for (String lblDirectory : arrayDirectories) {
-            lblArrow = new Label(FontAwesome.ANGLE_RIGHT.getHtml(), ContentMode.HTML);
-            lblArrow.addStyleName(ValoTheme.LABEL_COLORED);
-            btnFolder = component.createButtonPath(lblDirectory);
-            btnFolder.addClickListener(event -> {
-                String newRoot = event.getComponent().getCaption();
-                String directorys = file.getAbsolutePath();
-                int inicio = directorys.indexOf(newRoot);
-                String dir = directorys.substring(0, inicio + newRoot.length());
-
-                cleanAndBuild(new File(dir));
-                displayDirectoryContents(new File(dir));
-
-            });
-
-            rootPath.addComponent(lblArrow);
-            rootPath.setComponentAlignment(lblArrow, Alignment.MIDDLE_CENTER);
-            rootPath.addComponent(btnFolder);
+    private List<File> getListDirectories(File directory) {
+        List<File> listDirectories = new ArrayList<>();
+        String[] arrayDirectories = directory.getPath().split(Constantes.SEPARADOR);
+        int idxArchivos = Arrays.asList(arrayDirectories).indexOf(Constantes.ROOT_DIR);
+        String[] newArrayDirectories = Arrays.copyOfRange(arrayDirectories, idxArchivos, arrayDirectories.length);
+        StringBuilder newPath = new StringBuilder();
+        int i = 1;
+        for (String dirName : newArrayDirectories) {
+            int fin = directory.getPath().indexOf(dirName);
+            listDirectories.add(new File(directory.getPath().substring(0, fin + dirName.length())));
+             newPath.append(dirName);
+            if (i != newArrayDirectories.length) {
+                newPath.append("\\");
+            }
+            i++;
         }
+        //System.out.println("newPath = " + newPath.toString());
+        return listDirectories;
     }
 
-    private String nameDir(File file, String nameDir) {
-        String root = nameDir;
-        String directory = file.getAbsolutePath();
-        int inicio = directory.indexOf(root);
-        // SE REALIZA ESTA VALIDACION PARA EVITAR ERRORES EN LA VISTA DE LOS ARCHIVOS DEL FOLDER "ARCHIVOS" UNICAMENTE
-        int uno = root.equals(directory) ? 0 : 1;
-        String substring = directory.substring(inicio + root.length() + uno);
-
-        return substring;
-    }
-
-    public void cleanAndBuild(File directory) {
+    public void cleanAndDisplay(File directory) {
         content.removeAllComponents();
         content.addComponent(buildHeader());
         content.addComponent(buildToolBar(directory));
         content.addComponent(buildViewsBar(directory));
-        //directoryContent = buildGridView(directory);
         directoryContent = selectView(selected, directory);
         content.addComponent(directoryContent);
         content.setExpandRatio(directoryContent, 1);
@@ -337,7 +323,6 @@ public final class FilesView extends VerticalLayout implements View {
     private Plupload uploadContents(File directory) {
 
         String uploadPath = directory.getAbsolutePath();
-        System.out.println("uploadPath = " + uploadPath);
         Plupload uploader = new Plupload("Cargar", FontAwesome.UPLOAD);
         //uploader.addFilter(new PluploadFilter("music", "mp3, flac"));
         uploader.setPreventDuplicates(true);
@@ -372,8 +357,7 @@ public final class FilesView extends VerticalLayout implements View {
                 boolean cambio = fileFalse.renameTo(fileReal);
 
                 // SE RECARGA LA PAGINA, PARA MOSTRAR EL ARCHIVO CARGADO
-                cleanAndBuild(new File(uploadPath));
-                displayDirectoryContents(new File(uploadPath));
+                cleanAndDisplay(new File(uploadPath));
                 notification.createSuccess("Se cargó el archivo: " + file.getName());
             }
         });
@@ -424,11 +408,11 @@ public final class FilesView extends VerticalLayout implements View {
 
         return uploader;
     }
-    
+
     private String setStyle(Boolean selected) {
         return selected ? "borderButton" : "noBorderButton";
     }
-    
+
     @Override
     public void enter(final ViewChangeEvent event) {
     }

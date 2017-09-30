@@ -13,5 +13,9 @@ public class Constantes {
     
     //CARPETA DE ARCHIVOS PC
     public static final String ROOT_PATH = "C:\\Users\\Edrd\\Documents\\GitHub\\fileManagerV2\\Archivos"; 
+    public static final String ROOT_DIR = "Archivos";
+    public static final String SEPARADOR  = "\\\\";
+    
+    
     
 }
