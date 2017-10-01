@@ -118,7 +118,7 @@ public class EditWindow extends Window {
         btnGuardar = component.createButtonPrimary("Guardar");
         btnGuardar.addClickListener((Button.ClickEvent event) -> {
             Path source = Paths.get(file.getAbsolutePath());
-            String newName = txtEditName.getValue();
+            String newName = txtEditName.getValue().trim();
 
             File newFile = null;
             if (file.isDirectory()) {

@@ -181,12 +181,12 @@ public class EmailWindow extends Window implements View {
                 if (enviar) {
                     Mail sendMail = new Mail();
 
-                    String asunto = txtAsunto.getValue();
+                    String asunto = txtAsunto.getValue().trim();
                     String mensaje = cuerpoCorreo.getValue();
                     //List<String> receptores = new ArrayList<String>();
                     //receptores.add(paraTxt.getValue());
 
-                    String receptores = txtPara.getValue().toString();
+                    String receptores = txtPara.getValue().toString().trim();
                     System.out.println("receptores = " + receptores);
 
                     List<String> adjuntos = new ArrayList<>();
@@ -198,7 +198,7 @@ public class EmailWindow extends Window implements View {
                     boolean envio = sendMail.enviarSpring(asunto, receptores, mensaje, adjuntos);
                     System.out.println("envio = " + envio);
 
-                    String message = envio ? "Se enviÃ³ con Ã©xito" : "Problemas con el envÃ­o";
+                    String message = envio ? "Se envío con Éxito" : "Problemas con el envío";
                     notification.createSuccess(message);
 
                     close();

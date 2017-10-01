@@ -104,7 +104,7 @@ public class NewFolderWindow extends Window {
         btnCrear.setEnabled(false);
         btnCrear.addClickListener((ClickEvent event) -> {
 
-            viewLogic.createFolder(file.toPath(), txtNameFolder.getValue());
+            viewLogic.createFolder(file.toPath(), txtNameFolder.getValue().trim());
             close();
         });
         btnCrear.setClickShortcut(ShortcutAction.KeyCode.ENTER, null);
