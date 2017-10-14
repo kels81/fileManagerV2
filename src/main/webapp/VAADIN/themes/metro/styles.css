@@ -13069,6 +13069,46 @@ div.v-layout.v-horizontal.v-widget {
 	white-space: nowrap;
 }
 
+.metro .v-button-labelColored {
+	border: none;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	background: transparent;
+	color: #0072C6;
+	cursor: default !important;
+	opacity: 1;
+}
+
+.metro .v-button-labelColored:hover {
+	color: #0072C6;
+}
+
+.metro .v-button-labelColored:hover:after {
+	background: transparent;
+}
+
+.metro .v-button-labelColored:active {
+	opacity: 0.7;
+	filter: alpha(opacity = 70);
+}
+
+.metro .v-button-labelColored:active:after {
+	background: transparent;
+}
+
+.metro .v-button-labelColored.v-disabled {
+	opacity: 1;
+	filter: alpha(opacity = 50);
+}
+
+.metro .v-button-labelColored.v-disabled:after {
+	display: none;
+}
+
+.metro .InvisibleButton {
+	display: none;
+}
+
 .metro .loginview {
 	background-color: #fff;
 	background-image: -webkit-radial-gradient(50% 50%, circle, #fafafa, #fafafa);
@@ -13184,18 +13224,28 @@ div.v-layout.v-horizontal.v-widget {
 	background-color: #f5f5f5;
 }
 
-.metro .schedule .gridView .mainPanel .frame .labelInfo {
+.metro .schedule .gridView .mainPanel .frame .labelName {
 	font-size: 14px;
 	line-height: 1.2;
 	padding: 0 10px;
 }
 
-.metro .schedule .gridView[width-range~="0-700px"] .mainPanel {
+.metro .schedule .gridView .mainPanel .frame .labelInfo {
+	font-size: 12px;
+	line-height: 1.2;
+	padding: 0 10px;
+}
+
+.metro .schedule .gridView[width-range~="0-600px"] .mainPanel {
 	width: 100% !important;
 }
 
-.metro .schedule .gridView[width-range~="701px-"] .mainPanel {
-	width: 20% !important;
+.metro .schedule .gridView[width-range~="601px-1000px"] .mainPanel {
+	width: 50% !important;
+}
+
+.metro .schedule .gridView[width-range~="1001px-1920px"] .mainPanel {
+	width: 25% !important;
 }
 
 .metro .schedule .listView {
@@ -13203,16 +13253,6 @@ div.v-layout.v-horizontal.v-widget {
 	padding-bottom: 18.5px;
 	padding-left: 18.5px;
 	padding-right: 18.5px;
-}
-
-.metro .attachedlayout {
-	cursor: pointer;
-	position: relative;
-	padding-right: 20px;
-}
-
-.metro .attachedlayout:hover {
-	outline: 1px solid #5198df;
 }
 
 .metro .deleteBtn {
@@ -13238,17 +13278,23 @@ div.v-layout.v-horizontal.v-widget {
 	background: #ffffff;
 }
 
+.metro .attachedlayout {
+	cursor: pointer;
+	position: relative;
+	padding-right: 20px;
+}
+
 .metro .attachedlayout .deleteBtn {
 	position: absolute;
 	display: none;
 }
 
-.metro .attachedlayout:hover .deleteBtn {
-	display: block;
+.metro .attachedlayout:hover {
+	outline: 1px solid #5198df;
 }
 
-.metro .attachedfiles {
-	padding: 7px;
+.metro .attachedlayout:hover .deleteBtn {
+	display: block;
 }
 
 .metro .address-editor {
@@ -13287,6 +13333,15 @@ div.v-layout.v-horizontal.v-widget {
 	text-decoration: none;
 }
 
+.metro .v-widget.mytoken.tokenfield .v-csslayout div {
+	float: left;
+}
+
+.metro .v-widget.mytoken.tokenfield .v-csslayout .v-button-link {
+	margin: 0 1px 1px 0;
+	height: 37px;
+}
+
 .metro .tokentextfield .v-filterselect {
 	background: #ddd none repeat scroll 0 0;
 	border-radius: 4px;
@@ -13305,15 +13360,6 @@ div.v-layout.v-horizontal.v-widget {
 
 .metro .tokentextfield .v-filterselect .v-filterselect-button {
 	display: none;
-}
-
-.metro .v-widget.mytoken.tokenfield .v-csslayout div {
-	float: left;
-}
-
-.metro .v-widget.mytoken.tokenfield .v-csslayout .v-button-link {
-	margin: 0 1px 1px 0;
-	height: 37px;
 }
 
 .metro .v-table-header {
@@ -13358,12 +13404,48 @@ div.v-layout.v-horizontal.v-widget {
 	background: #E8F3FA;
 }
 
+.metro .v-table-cell-content-black {
+	background: black;
+	color: black;
+}
+
 .metro .v-label-noselect {
 	user-select: none;
 	-o-user-select: none;
 	-moz-user-select: none;
 	-khtml-user-select: none;
 	-webkit-user-select: none;
+}
+
+.metro .v-menubar-btn-contextmenu {
+	border: 1px solid #eee;
+	background: #fff;
+}
+
+.metro .v-menubar-btn-contextmenu:focus:after {
+	border-color: #eee;
+}
+
+.metro .v-menubar-btn-contextmenu  > .v-menubar-menuitem-selected {
+	background: #f7f7f7;
+	color: #181818;
+}
+
+.metro .v-menubar-btn-contextmenu  > .v-menubar-menuitem .v-icon {
+	margin: 0px;
+	cursor: inherit;
+}
+
+.metro .v-menubar-btn-contextmenu .v-menubar-submenu-indicator {
+	display: none;
+}
+
+.metro .v-menubar-btn-contextmenu .v-menubar-submenu-indicator  + .v-menubar-menuitem-caption:after {
+	display: none;
+}
+
+.metro .v-menubar-btn-contextmenu .v-menubar-submenu-indicator  + .v-menubar-menuitem-caption:empty:after {
+	display: none;
 }
 
 .metro .transactions .viewheader {

@@ -5,6 +5,7 @@
  */
 package com.mx.zoom.filebox.component;
 
+import com.mx.zoom.filebox.logic.ScheduleDirectoryLogic;
 import com.mx.zoom.filebox.logic.ScheduleFileLogic;
 import com.mx.zoom.filebox.utils.Components;
 import com.vaadin.event.FieldEvents;
@@ -39,12 +40,12 @@ public class NewFolderWindow extends Window {
     private Button btnCrear;
 
     private final Components component = new Components();
-    private final ScheduleFileLogic viewLogic;
+    private final ScheduleDirectoryLogic viewLogicDirectory;
 
     private final TabSheet detailsWrapper;
 
-    public NewFolderWindow(ScheduleFileLogic moveCopyFileLogic, File file) {
-        viewLogic = moveCopyFileLogic;
+    public NewFolderWindow(ScheduleDirectoryLogic moveCopyFileLogic, File file) {
+        viewLogicDirectory = moveCopyFileLogic;
 
         addStyleName("createfolder-window");
         Responsive.makeResponsive(this);
@@ -104,7 +105,7 @@ public class NewFolderWindow extends Window {
         btnCrear.setEnabled(false);
         btnCrear.addClickListener((ClickEvent event) -> {
 
-            viewLogic.createFolder(file.toPath(), txtNameFolder.getValue().trim());
+            viewLogicDirectory.createFolder(file.toPath(), txtNameFolder.getValue().trim());
             close();
         });
         btnCrear.setClickShortcut(ShortcutAction.KeyCode.ENTER, null);

@@ -458,5 +458,40 @@
         text-align: center;
         white-space: nowrap;
     }
-    
+
+    .v-button-labelColored {
+        border: none;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        background: transparent;
+        color: #0072C6;
+        cursor: default !important;
+        opacity: 1;
+        &:hover {
+            color: #0072C6;
+            &:after {
+                background: transparent;
+            }
+        }
+        &:active {
+            opacity: 0.7;
+            filter: alpha(opacity = 70);
+            &:after {
+                background: transparent;
+            }
+        }
+    }
+
+    .v-button-labelColored.v-disabled {
+        opacity: 1;
+        filter: alpha(opacity = 50);
+        &:after {
+            display: none;
+        }
+    }
+
+    .InvisibleButton {
+        display: none;
+    }
+
 }

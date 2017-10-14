@@ -166,11 +166,11 @@ public class Mail {
                     //Se definen el o los destinatarios que reciben el mail
                     helper.addTo(email);
                 } catch (Exception ex) {
-                    //en caso que el email est√© mal formado lanzar√° una exception y la ignoramos
+                    //en caso que el email estÈ mal formado lanzar· una exception y la ignoramos
                 }
             }
 
-            //Se define qui√©n es el emisor del e-mail
+            //Se define quiÈn es el emisor del e-mail
             helper.setFrom(username);
 
             //Se define el asunto del e-mail y la fecha de envio

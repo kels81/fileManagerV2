@@ -5,21 +5,36 @@
  */
 package com.mx.zoom.filebox.component;
 
+import com.mx.zoom.filebox.component.contextmenu.FileContextMenu;
+import com.google.common.eventbus.Subscribe;
+import com.mx.zoom.filebox.event.DashboardEvent.BrowserResizeEvent;
+import com.mx.zoom.filebox.event.DashboardEventBus;
+import com.mx.zoom.filebox.logic.ScheduleDirectoryLogic;
 import com.mx.zoom.filebox.logic.ScheduleFileLogic;
 import com.mx.zoom.filebox.utils.Components;
 import com.mx.zoom.filebox.utils.FileFormats;
+import com.vaadin.addon.contextmenu.ContextMenu;
+import com.vaadin.addon.contextmenu.GridContextMenu;
+import com.vaadin.addon.contextmenu.GridContextMenu.GridContextMenuOpenListener.GridContextMenuOpenEvent;
 import com.vaadin.data.Item;
-import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.ItemClickEvent;
-import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.navigator.View;
+import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.server.Page;
+import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.renderers.ButtonRenderer;
 import com.vaadin.ui.themes.ValoTheme;
+import de.datenhahn.vaadin.componentrenderer.FocusPreserveExtension;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,7 +42,9 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -36,141 +53,181 @@ import org.apache.commons.lang3.ArrayUtils;
  *
  * @author Edrd
  */
-public class FileListLayout2 extends Table {
+//public class FileListLayout extends Table {
+public class FileListLayout2 extends VerticalLayout implements View {
 
     private File file;
     private ThemeResource iconResource;
     private Image icon;
     private final Components component = new Components();
-    private final ScheduleFileLogic viewLogic;
+
+    Object selectedItemInTheRow;
+
+    private IndexedContainer idxCont;
+    //private Table table;
+    private Grid grid;
+
+    private final ScheduleFileLogic viewLogicFile;
+    private final ScheduleDirectoryLogic viewLogicDirectory;
 
     private final String COL_FILE = "file";
     private final String COL_ICON = "icon";
     private final String COL_NOMBRE = "nombre";
-    private final String COL_MODIFICADO = "modificado";
     private final String COL_TAMANIO = "tamanio";
+    private final String COL_MODIFICADO = "modificado";
+    private final String COL_CONTEXT_MENU = "contextMenu";
 
-    //public final Object[] COLUMNS_VISIBLES = {"icon", "nombre", "modificado", "tamanio"};
-    public final Object[] COLUMNS_VISIBLES = {COL_ICON, COL_NOMBRE, COL_MODIFICADO, COL_TAMANIO};
-    public static final String[] COLUMNS_HEADERS = {"", "Nombre", "Modificado", "tamaño"};
-    public static final String[] DEFAULT_COLLAPSIBLE = {"modificado", "tamanio"};
+    public final Object[] COLUMNS_VISIBLES = {COL_ICON, COL_NOMBRE, COL_TAMANIO, COL_MODIFICADO};
+    public final String[] COLUMNS_HEADERS = {"", "Nombre", "Tamaño", "Modificado"};
+    public final String[] DEFAULT_COLLAPSIBLE = {COL_TAMANIO, COL_MODIFICADO};
 
-    public FileListLayout2(ScheduleFileLogic listaFileLogic, File file) {
-        this.viewLogic = listaFileLogic;
-        //this.file = file;
+    public FileListLayout2(ScheduleFileLogic mosaicoFileLogic, ScheduleDirectoryLogic mosaicoDirectoryLogic, File file) {
+        this.viewLogicFile = mosaicoFileLogic;
+        this.viewLogicDirectory = mosaicoDirectoryLogic;
 
         setSizeFull();
-        addStyleName(ValoTheme.TABLE_BORDERLESS);
-        addStyleName(ValoTheme.TABLE_NO_STRIPES);
-        addStyleName(ValoTheme.TABLE_NO_VERTICAL_LINES);
-        addStyleName(ValoTheme.TABLE_SMALL);
-        setSelectable(true);
+        addStyleName("listView");
+        DashboardEventBus.register(this);   //NECESARIO PARA CONOCER LA ORIENTACION Y RESIZE DEL BROWSER
 
-        setImmediate(true);
-        setSortEnabled(false);
-
-        setColumnAlignment(COL_MODIFICADO, Align.RIGHT);
-        setColumnAlignment(COL_TAMANIO, Align.RIGHT);
-
-        setColumnHeader(COL_ICON, "");
-        setColumnHeader(COL_NOMBRE, "Nombre");
-        setColumnHeader(COL_MODIFICADO, "Modificado");
-        setColumnHeader(COL_TAMANIO, "Tamaño");
-
-        //PARA HACER RESPONSIVO LA TABLA
-        setColumnCollapsingAllowed(true);
-        setColumnCollapsible(COL_NOMBRE, false);
-
-        setColumnExpandRatio(COL_NOMBRE, 0.60f);
-        setColumnExpandRatio(COL_MODIFICADO, 0.20f);
-        setColumnExpandRatio(COL_TAMANIO, 0.20f);
-        refreshRowCache();
-        //setRowHeaderMode(Table.RowHeaderMode.INDEX);          //PARA ENUMERAR LAS FILAS
-        setContainerDataSource(crearContenedor(file));
-        //setContainerDataSource(new BeanItemContainer<>(crearContenedorFile(file)));
-        setVisibleColumns(COLUMNS_VISIBLES);
-
-        addItemClickListener(new ItemClickEvent.ItemClickListener() {
-            @Override
-            public void itemClick(ItemClickEvent event) {
-                //Notification.show(event.getItemId().toString());
-                Notification.show(event.getItem().getItemProperty(COL_FILE).getValue().toString());
-            }
-        });
+        addComponent(buildGrid(file));
+        browserResized();
+        System.out.println("width-->" + Page.getCurrent().getBrowserWindowWidth());
+        System.out.println("height-->" + Page.getCurrent().getBrowserWindowHeight());
     }
 
-//    private boolean defaultColumnsVisible() {
-//        boolean result = true;
-//        for (String propertyId : DEFAULT_COLLAPSIBLE) {
-//            System.out.println("propertyId = " + propertyId);
-//            if (isColumnCollapsed(propertyId) == Page.getCurrent()
-//                    .getBrowserWindowWidth() < 800) {
-//                result = false;
-//            }
-//        }
-//        return result;
-//    }
-//
-//    @Subscribe
-//    public void browserResized(final BrowserResizeEvent event) {
-//        // Some columns are collapsed when browser window width gets small
-//        // enough to make the table fit better.
-//        if (defaultColumnsVisible()) {
-//            for (String propertyId : DEFAULT_COLLAPSIBLE) {
-//                System.out.println("propertyId2 = " + propertyId);
-//                setColumnCollapsed(propertyId, Page.getCurrent()
-//                        .getBrowserWindowWidth() < 800);
-//            }
-//        }
-//    }
+    //METODO NECESARIO PARA CONOCER LA ORIENTACION Y RESIZE DEL BROWSER
+    @Override
+    public void detach() {
+        super.detach();
+        // A new instance of TransactionsView is created every time it's
+        // navigated to so we'll need to clean up references to it on detach.
+        DashboardEventBus.unregister(this);
+    }
+
+    private Grid buildGrid(File file) {
+        grid = new Grid();
+        grid.setContainerDataSource(crearContenedor(file));
+        grid.setSizeFull();
+        grid.setHeightByRows(11);
+        grid.setHeightMode(HeightMode.ROW);
+        grid.setImmediate(true);
+        grid.setSelectionMode(SelectionMode.SINGLE);
+//        grid.addStyleName(ValoTheme.TABLE_BORDERLESS);
+//        grid.addStyleName(ValoTheme.TABLE_NO_STRIPES);
+//        grid.addStyleName(ValoTheme.TABLE_NO_VERTICAL_LINES);
+//        grid.addStyleName(ValoTheme.TABLE_SMALL);
+        grid.addStyleName("noselect");
+
+        grid.setColumns(COLUMNS_VISIBLES);
+        setColumnHeaders();
+
+        grid.setEditorEnabled(false);
+
+        //PARA HACER RESPONSIVO LA TABLA
+        grid.setColumnReorderingAllowed(false);
+        //table.setColumnCollapsible(COL_NOMBRE, false);
+
+        //grid.getColumn(COL_ICON).setExpandRatio(1);
+        grid.getColumn(COL_NOMBRE).setExpandRatio(6);
+        grid.getColumn(COL_TAMANIO).setExpandRatio(2);
+        grid.getColumn(COL_MODIFICADO).setExpandRatio(2);
+
+        grid.addItemClickListener(new ItemClickEvent.ItemClickListener() {
+            @Override
+            public void itemClick(ItemClickEvent event) {
+                if (event.getItem() != null) {
+                    File file = new File(event.getItem().getItemProperty(COL_FILE).getValue().toString());
+                    if (event.isDoubleClick()) {
+                        if (file.isDirectory()) {
+                            viewLogicFile.cleanAndDisplay(file);
+                        } else if (file.isFile()) {
+                            Notification.show("Ver archivo: " + file.getName());
+                            //downloadContents(file);
+//                        Window w = new ViewerWindow(file);;
+//                        UI.getCurrent().addWindow(w);
+//                        w.focus();
+                        }
+                    }
+                }
+
+            }
+        });
+
+        grid.getColumn(COL_ICON).setRenderer(new com.vaadin.ui.renderers.ImageRenderer());
+//        grid.getColumn(COL_CONTEXT_MENU).setRenderer(new ButtonRenderer(e ->
+//            Notification.show("Clicked " + grid.getContainerDataSource()
+//                .getContainerProperty(e.getItemId(), COL_NOMBRE))));
+
+        return grid;
+    }
+
+    private void setColumnHeaders() {
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        int i = 0;
+        for (Object pid : COLUMNS_VISIBLES) {
+            map.put(pid.toString(), COLUMNS_HEADERS[i]);
+            i++;
+        }
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            Grid.Column bornColumn = grid.getColumn(entry.getKey());
+            bornColumn.setHeaderCaption(entry.getValue());
+        }
+
+//        HeaderRow mainHeader = grid.getDefaultHeaderRow();
+//        mainHeader.getCell(COL_ICON).setText("");
+//        mainHeader.getCell(COL_NOMBRE).setText("Nombres");
+//        mainHeader.getCell(COL_TAMANIO).setText("Tamaños");
+//        mainHeader.getCell(COL_MODIFICADO).setText("Modificados");
+    }
+
     private IndexedContainer crearContenedor(File directory) {
+        idxCont = new IndexedContainer();
 
-        IndexedContainer idxCont = new IndexedContainer();
-
-        idxCont.addContainerProperty(COL_FILE, File.class, "");
-        idxCont.addContainerProperty(COL_ICON, Image.class, "");
-        //idxCont.addContainerProperty(COL_NOMBRE, Button.class, "");
+        idxCont.addContainerProperty(COL_ICON, Resource.class, "");
         idxCont.addContainerProperty(COL_NOMBRE, String.class, "");
-        idxCont.addContainerProperty(COL_MODIFICADO, String.class, "");
         idxCont.addContainerProperty(COL_TAMANIO, String.class, "");
+        idxCont.addContainerProperty(COL_MODIFICADO, String.class, "");
+//        idxCont.addContainerProperty(COL_CONTEXT_MENU, String.class, "");
+        idxCont.addContainerProperty(COL_FILE, File.class, "");
 
         List<File> files = component.directoryContents(directory);
 
         if (!files.isEmpty()) {
             for (File fileRow : files) {
                 this.file = fileRow;
-                String fileSize = FileUtils.byteCountToDisplaySize(file.length());
 
                 Item item = idxCont.getItem(idxCont.addItem());
-                item.getItemProperty(COL_FILE).setValue(file);
-                item.getItemProperty(COL_ICON).setValue(buildIcon());
-                //item.getItemProperty(COL_NOMBRE).setValue(buildButtonLink());
-                item.getItemProperty(COL_NOMBRE).setValue(buildName());
+                item.getItemProperty(COL_ICON).setValue(getIconExtension());
+                item.getItemProperty(COL_NOMBRE).setValue(file.getName());
+                item.getItemProperty(COL_TAMANIO).setValue(getNumberOfElementsAndFileSize());
                 item.getItemProperty(COL_MODIFICADO).setValue(getAtributos());
-                item.getItemProperty(COL_TAMANIO).setValue(fileSize);
+//                item.getItemProperty(COL_CONTEXT_MENU).setValue("holaaaasss");
+                item.getItemProperty(COL_FILE).setValue(file);
             }
         }
+
+        GridContextMenu contextMenu = new GridContextMenu(grid);
+        contextMenu.addGridHeaderContextMenuListener(e -> {
+            contextMenu.removeItems();     //PARA NO MOSTRAR CONTEXT MENU EN HEADERS
+        });
+        contextMenu.addGridBodyContextMenuListener(e -> {
+            contextMenu.removeItems();
+            new FileContextMenu().getFileContextMenu(contextMenu, getFileSelected(e), viewLogicFile, viewLogicDirectory);
+
+        });
 
         return idxCont;
     }
 
-    private List<File> crearContenedorFile(File directory) {
-        List<File> files = component.directoryContents(directory);
-        return files;
-    }
-
-    private Image buildIcon() {
-        icon = new Image(null, getIconExtension());
-        icon.setWidth(30.0f, Unit.PIXELS);
-        icon.setHeight(31.0f, Unit.PIXELS);
-        return icon;
+    private File getFileSelected(GridContextMenuOpenEvent e) {
+        return new File(grid.getContainerDataSource().getContainerProperty(e.getItemId(), COL_FILE).getValue().toString());
     }
 
     private ThemeResource getIconExtension() {
 
         String extension = FilenameUtils.getExtension(file.getPath()).toLowerCase();
         if (file.isDirectory()) {
-            iconResource = new ThemeResource("img/file_manager/folder_" + (file.list().length == 0 ? "empty" : "full") + ".png");
+            iconResource = new ThemeResource("img/file_manager/small/folder_" + (file.list().length == 0 ? "empty" : "full") + ".png");
         } else {
             //documento
             //iconResource = new ThemeResource("img/file_manager/" + extension + ".png");
@@ -194,20 +251,28 @@ public class FileListLayout2 extends Table {
             }
         }
 
-        return new ThemeResource("img/file_manager/" + formato + ".png");
+        return new ThemeResource("img/file_manager/small/" + formato + ".png");
     }
 
-    private Button buildButtonLink2() {
-        Button btnLink = new Button(file.getName());
-        btnLink.addStyleName(ValoTheme.BUTTON_SMALL);
-        btnLink.addStyleName(ValoTheme.BUTTON_BORDERLESS);
-        //btnLink.addStyleName(ValoTheme.BUTTON_LINK);
+    private Label getFileName() {
+        Label lblName = new Label(file.getName());
+        lblName.addStyleName(ValoTheme.LABEL_BOLD);
+        lblName.addStyleName("noselect");
 
-        return btnLink;
+        return lblName;
     }
 
-    private String buildName() {
-        return file.getName();
+    private String getNumberOfElementsAndFileSize() {
+        long fileSize = file.length();
+        String fileSizeDisplay = FileUtils.byteCountToDisplaySize(fileSize);
+        String elementos = (file.isDirectory()
+                ? String.valueOf(file.list().length == 0
+                        ? "" : file.list().length) + (file.list().length > 1
+                        ? " elementos" : file.list().length == 0
+                                ? "vacío" : " elemento")
+                : fileSizeDisplay);
+
+        return elementos;
     }
 
     private String getAtributos() {
@@ -221,6 +286,24 @@ public class FileListLayout2 extends Table {
         }
 
         return fechaCreacion;
+    }
+
+    @Subscribe
+    public void browserResized(final BrowserResizeEvent event) {
+        browserResized();
+    }
+
+    private void browserResized() {
+        // Some columns are collapsed when browser window width gets small
+        // enough to make the table fit better.
+        for (String propertyId : DEFAULT_COLLAPSIBLE) {
+            Grid.Column column = grid.getColumn(propertyId);
+            column.setHidden(Page.getCurrent().getBrowserWindowWidth() < 800);
+        }
+    }
+
+    @Override
+    public void enter(ViewChangeListener.ViewChangeEvent event) {
     }
 
 }

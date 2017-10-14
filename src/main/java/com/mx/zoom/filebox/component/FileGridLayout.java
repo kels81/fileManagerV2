@@ -5,33 +5,30 @@
  */
 package com.mx.zoom.filebox.component;
 
+import com.mx.zoom.filebox.component.contextmenu.ButtonContextMenu;
 import com.mx.zoom.filebox.logic.ScheduleDirectoryLogic;
 import com.mx.zoom.filebox.logic.ScheduleFileLogic;
+import com.mx.zoom.filebox.utils.Components;
 import com.mx.zoom.filebox.utils.FileFormats;
-import com.vaadin.addon.contextmenu.ContextMenu;
-import com.vaadin.addon.contextmenu.Menu;
-import com.vaadin.addon.contextmenu.MenuItem;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
-import com.vaadin.server.FileResource;
-import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
+import com.vaadin.server.Responsive;
 import com.vaadin.server.Sizeable;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.UI;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
@@ -43,19 +40,22 @@ import org.apache.commons.lang3.ArrayUtils;
  * @author Edrd
  */
 public class FileGridLayout extends CssLayout implements LayoutClickListener {
+//public class FileGridLayout extends Panel implements LayoutClickListener {
 
-    private VerticalLayout frame;
+    private HorizontalLayout frame;
     private HorizontalLayout mosaicoLayout;
     private ThemeResource iconResource;
     private Image icon;
     private VerticalLayout fileDetails;
-    private final File file;
+    private File file;
+    private CssLayout mainPanel;
 
     private Label fileName;
     private Label numberOfElementsAndFileSize;
-    
-//    private Button fileName;
-//    private Button numberOfElementsAndFileSize;
+
+    private final int widthPage;
+    private final Button downloadInvisibleButton = new Button();
+    private final Components component = new Components();
 
     private final ScheduleFileLogic viewLogicFile;
     private final ScheduleDirectoryLogic viewLogicDirectory;
@@ -64,14 +64,39 @@ public class FileGridLayout extends CssLayout implements LayoutClickListener {
         super();
         this.viewLogicFile = mosaicoFileLogic;
         this.viewLogicDirectory = mosaicoDirectoryLogic;
-        this.file = file;
-        
-        addStyleName("mainPanel");
-        addComponent(buildFrame());
+        this.widthPage = Page.getCurrent().getBrowserWindowWidth();
+
+        addStyleName("gridView");
+        setWidth(100.0f, Sizeable.Unit.PERCENTAGE);
+        Responsive.makeResponsive(this);
+
+        File currentDir = new File(file.getAbsolutePath());
+        List<File> files = (List<File>) component.directoryContents(currentDir);
+
+        for (File fileComp : files) {
+            this.file = fileComp;
+            addComponent(buildGrid());
+        }
+
+        System.out.println("width-->" + Page.getCurrent().getBrowserWindowWidth());
+        System.out.println("height-->" + Page.getCurrent().getBrowserWindowHeight());
+
+        //BUTTON PARA PODER DESCARGAR ARCHIVOS POR MEDIO DEL CONTEXT MENU
+        downloadInvisibleButton.setId("DownloadButtonId");
+        downloadInvisibleButton.addStyleName("InvisibleButton");
+        addComponent(downloadInvisibleButton);
     }
 
-    private VerticalLayout buildFrame() {
-        frame = new VerticalLayout();
+    private Component buildGrid() {
+        mainPanel = new CssLayout();
+        mainPanel.addStyleName("mainPanel");
+        mainPanel.addComponent(buildFrame());
+
+        return mainPanel;
+    }
+
+    private HorizontalLayout buildFrame() {
+        frame = new HorizontalLayout();
         frame.addStyleName("frame");
         frame.setMargin(true);
         frame.addStyleName(ValoTheme.LAYOUT_CARD);
@@ -79,9 +104,13 @@ public class FileGridLayout extends CssLayout implements LayoutClickListener {
         frame.addLayoutClickListener(this);
         frame.addComponent(buildMosaico());
 
-        ContextMenu contextMenu = new ContextMenu(this, false);
-        createMenu(contextMenu, file);
-        contextMenu.setAsContextMenuOf(frame);
+        MenuBar btnContextMenu = new ButtonContextMenu(downloadInvisibleButton, file, viewLogicFile, viewLogicDirectory);
+        frame.addComponent(btnContextMenu);
+        frame.setComponentAlignment(btnContextMenu, Alignment.TOP_RIGHT);
+
+//        ContextMenu contextMenu = new ContextMenu(this, false);
+//        new FileContextMenu().getFileContextMenu(contextMenu, file, viewLogicFile, viewLogicDirectory);
+//        contextMenu.setAsContextMenuOf(frame);
         return frame;
     }
 
@@ -93,6 +122,7 @@ public class FileGridLayout extends CssLayout implements LayoutClickListener {
         Component icon = buildIcon();
         Component details = buildFileDetails();
         mosaicoLayout.addComponent(icon);
+        mosaicoLayout.setComponentAlignment(icon, Alignment.MIDDLE_CENTER);
         mosaicoLayout.addComponent(details);
         mosaicoLayout.setExpandRatio(icon, 0.30f);
         mosaicoLayout.setExpandRatio(details, 0.70f);
@@ -102,10 +132,8 @@ public class FileGridLayout extends CssLayout implements LayoutClickListener {
 
     private Image buildIcon() {
         icon = new Image(null, getIconExtension());
-//        icon.setWidth(50.0f, Unit.PIXELS);
-//        icon.setHeight(55.0f, Unit.PIXELS);
-        icon.setWidth(55.0f, Unit.PIXELS);
-        icon.setHeight(60.0f, Unit.PIXELS);
+        icon.setWidth((file.isDirectory() ? 48.0f : 40.0f), Unit.PIXELS);
+        icon.setHeight((file.isDirectory() ? 43.0f : 49.0f), Unit.PIXELS);
         return icon;
     }
 
@@ -154,17 +182,13 @@ public class FileGridLayout extends CssLayout implements LayoutClickListener {
 
     private Label getFileName() {
         String name = file.getName();
-        name = (name.length() > 18 ? name.substring(0, 16) + "..." : name);
+        name = (widthPage >= 1200 && widthPage < 1300 ? (name.length() > 19 ? name.substring(0, 16) + "..." : name)
+                : widthPage > 1300 ? (name.length() > 20 ? name.substring(0, 17) + "..." : name) : name);
         fileName = new Label(name);
-        fileName.addStyleName("labelInfo");
+        fileName.addStyleName("labelName");
         fileName.addStyleName("noselect");
         fileName.addStyleName(ValoTheme.LABEL_BOLD);
-        //fileName.setReadOnly(true);
-        
-//        fileName = new Button(name);
-//        fileName.addStyleName(ValoTheme.BUTTON_SMALL);
-//        fileName.addStyleName(ValoTheme.BUTTON_BORDERLESS);
-        
+
         return fileName;
     }
 
@@ -182,85 +206,8 @@ public class FileGridLayout extends CssLayout implements LayoutClickListener {
         numberOfElementsAndFileSize.addStyleName("labelInfo");
         numberOfElementsAndFileSize.addStyleName("noselect");
         numberOfElementsAndFileSize.addStyleName(ValoTheme.LABEL_TINY);
-        //numberOfElementsAndFileSize.setReadOnly(true);
-        
-//        numberOfElementsAndFileSize = new Button(label);
-//        numberOfElementsAndFileSize.addStyleName(ValoTheme.BUTTON_TINY);
-//        numberOfElementsAndFileSize.addStyleName(ValoTheme.BUTTON_BORDERLESS);
 
         return numberOfElementsAndFileSize;
-    }
-
-    private void createMenu(ContextMenu menu, File file) {
-        //DESCARGAR
-        MenuItem descargar = menu.addItem("Descargar", e -> {
-            Notification.show("descargar");
-            //Window w = createWindowEdit(file);
-            //UI.getCurrent().addWindow(w);
-            //w.focus();
-        });
-        descargar.setIcon(FontAwesome.DOWNLOAD);
-        //EDITAR
-        MenuItem editar = menu.addItem("Editar", e -> {
-            EditWindow editWindow = new EditWindow(viewLogicFile, viewLogicDirectory, file);
-            Window w = editWindow;
-            UI.getCurrent().addWindow(w);
-            w.focus();
-        });
-        editar.setIcon(FontAwesome.PENCIL);
-        //BORRAR
-        MenuItem borrar = menu.addItem("Eliminar", new Menu.Command() {
-            @Override
-            public void menuSelected(MenuItem e) {
-                ConfirmWindow confirmWindow = new ConfirmWindow(viewLogicFile, viewLogicDirectory, file);
-                Window w = confirmWindow;
-                UI.getCurrent().addWindow(w);
-                w.focus();
-            }
-        });
-        borrar.setIcon(FontAwesome.TRASH);
-
-        // SEPARADOR
-        if (menu instanceof ContextMenu) {
-            ((ContextMenu) menu).addSeparator();
-        }
-        //MOVER-COPIAR
-        MenuItem moverCopiar = menu.addItem("Mover o Copiar", e -> {
-            DirectoryTreeFolderWindow directoryTreeWindow = new DirectoryTreeFolderWindow(viewLogicFile, viewLogicDirectory, file);
-            Window w = directoryTreeWindow;
-            UI.getCurrent().addWindow(w);
-            w.focus();
-        });
-        moverCopiar.setIcon(FontAwesome.COPY);
-        //ZIP
-        MenuItem zip = menu.addItem("Zip", e -> {
-            Path source = Paths.get(file.getAbsolutePath());
-
-            if (file.isDirectory()) {
-                viewLogicDirectory.zipDirectory(source, file);
-            } else {
-                viewLogicFile.zipFile(source, file);
-            }
-
-        });
-        zip.setIcon(FontAwesome.FOURSQUARE);
-
-//        MenuItem item6 = menu.addItem("Submenu", e -> {
-//        });
-//        item6.addItem("Subitem", e -> Notification.show("SubItem"));
-//        item6.addSeparator();
-//        item6.addItem("Subitem", e -> Notification.show("SubItem"))
-//                .setDescription("Test");
-    }
-
-    private void downloadContents(File file) {
-        FileResource resPath = new FileResource(new File(file.getAbsolutePath()));
-        /*
-                            FileDownloader fileDownloader = new FileDownloader(resPath);
-                            fileDownloader.markAsDirty();
-                            fileDownloader.extend(frame);
-         */
-        Page.getCurrent().open(resPath, null, false);
     }
 
     @Override

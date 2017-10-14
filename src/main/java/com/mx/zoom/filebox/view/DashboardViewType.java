@@ -7,7 +7,7 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 
 public enum DashboardViewType {
-    TRANSACTIONS("Archivos", FilesView.class, FontAwesome.TABLE, false);
+    TRANSACTIONS("Archivos", FilesView.class, FontAwesome.CLOUD, false);
 
     private final String viewName;
     private final Class<? extends View> viewClass;

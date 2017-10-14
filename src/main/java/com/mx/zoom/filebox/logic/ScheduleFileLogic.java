@@ -7,6 +7,10 @@ package com.mx.zoom.filebox.logic;
 
 import com.mx.zoom.filebox.utils.Notifications;
 import com.mx.zoom.filebox.view.schedule.FilesView;
+import com.vaadin.server.FileDownloader;
+import com.vaadin.server.FileResource;
+import com.vaadin.server.Page;
+import com.vaadin.ui.Button;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -31,6 +35,19 @@ public class ScheduleFileLogic implements Serializable {
 
     public ScheduleFileLogic(FilesView view) {
         this.view = view;
+    }
+    
+    public void downloadFile(File file, Button dwnldInvisibleBtn) {
+        FileDownloader fileDownloader;
+            if (!dwnldInvisibleBtn.getExtensions().isEmpty()) {
+                fileDownloader = (FileDownloader) dwnldInvisibleBtn.getExtensions().toArray()[0];
+                if (dwnldInvisibleBtn.getExtensions().contains(fileDownloader)) {
+                    dwnldInvisibleBtn.removeExtension(fileDownloader);
+                }
+            }
+            fileDownloader = new FileDownloader(new FileResource(file));
+            fileDownloader.extend(dwnldInvisibleBtn);
+            Page.getCurrent().getJavaScript().execute("document.getElementById('DownloadButtonId').click();");
     }
 
     public void moveFile(Path sourceDir, Path targetDir, File file) {
@@ -124,16 +141,6 @@ public class ScheduleFileLogic implements Serializable {
         } catch (IOException ex) {
             notification.createFailure("No se comprimio el archivo");
         }
-    }
-
-    public void createFolder(Path sourceDir, String name) {
-        File directory = new File(sourceDir + "\\" + name);
-        directory.mkdir();
-
-        // SE RECARGA LA PAGINA, PARA MOSTRAR EL ARCHIVO CARGADO
-        String dir = sourceDir.toString();
-        cleanAndDisplay(new File(dir));
-        notification.createSuccess("Se cargó con éxito");
     }
 
     public void cleanAndDisplay(File file) {

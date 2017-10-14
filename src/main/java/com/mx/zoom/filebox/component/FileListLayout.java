@@ -6,6 +6,7 @@
 package com.mx.zoom.filebox.component;
 
 import com.google.common.eventbus.Subscribe;
+import com.mx.zoom.filebox.component.contextmenu.ButtonContextMenu;
 import com.mx.zoom.filebox.event.DashboardEvent.BrowserResizeEvent;
 import com.mx.zoom.filebox.event.DashboardEventBus;
 import com.mx.zoom.filebox.logic.ScheduleDirectoryLogic;
@@ -20,8 +21,10 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.Page;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.Align;
@@ -51,10 +54,10 @@ public class FileListLayout extends VerticalLayout implements View {
     private Image icon;
     private final Components component = new Components();
 
-    Object selectedItemInTheRow;
-
     private IndexedContainer idxCont;
     private Table table;
+    private MenuBar btnContextMenu;
+    private final Button downloadInvisibleButton = new Button();
 
     private final ScheduleFileLogic viewLogicFile;
     private final ScheduleDirectoryLogic viewLogicDirectory;
@@ -64,10 +67,11 @@ public class FileListLayout extends VerticalLayout implements View {
     private final String COL_NOMBRE = "nombre";
     private final String COL_TAMANIO = "tamanio";
     private final String COL_MODIFICADO = "modificado";
+    private final String COL_CONTEXT_MENU = "contextMenu";
 
-    public final Object[] COLUMNS_VISIBLES = {COL_ICON, COL_NOMBRE, COL_TAMANIO, COL_MODIFICADO};
-    public final String[] COLUMNS_HEADERS = {"", "Nombre", "Tamaño", "Modificado"};
-    public static final String[] DEFAULT_COLLAPSIBLE = {"tamanio", "modificado"};
+    private final Object[] COLUMNS_VISIBLES = {COL_ICON, COL_NOMBRE, COL_TAMANIO, COL_MODIFICADO, COL_CONTEXT_MENU};
+    private final String[] COLUMNS_HEADERS = {"", "Nombre", "Tamaño", "Modificado", ""};
+    private final String[] DEFAULT_COLLAPSIBLE = {COL_TAMANIO, COL_MODIFICADO};
 
     public FileListLayout(ScheduleFileLogic mosaicoFileLogic, ScheduleDirectoryLogic mosaicoDirectoryLogic, File file) {
         this.viewLogicFile = mosaicoFileLogic;
@@ -78,10 +82,16 @@ public class FileListLayout extends VerticalLayout implements View {
         DashboardEventBus.register(this);   //NECESARIO PARA CONOCER LA ORIENTACION Y RESIZE DEL BROWSER
 
         addComponent(buildTable(file));
-        //System.out.println("width-->" + Page.getCurrent().getBrowserWindowWidth());
-        //System.out.println("height-->" + Page.getCurrent().getBrowserWindowHeight());
+        browserResized();
+        System.out.println("width-->" + Page.getCurrent().getBrowserWindowWidth());
+        System.out.println("height-->" + Page.getCurrent().getBrowserWindowHeight());
+        
+        //BUTTON PARA PODER DESCARGAR ARCHIVOS POR MEDIO DEL CONTEXT MENU
+        downloadInvisibleButton.setId("DownloadButtonId");
+        downloadInvisibleButton.addStyleName("InvisibleButton");
+        addComponent(downloadInvisibleButton);
     }
-    
+
     //METODO NECESARIO PARA CONOCER LA ORIENTACION Y RESIZE DEL BROWSER
     @Override
     public void detach() {
@@ -110,15 +120,16 @@ public class FileListLayout extends VerticalLayout implements View {
 
         table.setSortEnabled(false);
         table.setColumnAlignment(COL_MODIFICADO, Align.RIGHT);
-        //setColumnAlignment(COL_TAMANIO, Align.RIGHT);
+        table.setColumnAlignment(COL_CONTEXT_MENU, Align.CENTER);
 
         //PARA HACER RESPONSIVO LA TABLA
         table.setColumnCollapsingAllowed(true);
         table.setColumnCollapsible(COL_NOMBRE, false);
 
-        table.setColumnExpandRatio(COL_NOMBRE, 0.60f);
+        table.setColumnExpandRatio(COL_NOMBRE, 0.50f);
         table.setColumnExpandRatio(COL_MODIFICADO, 0.20f);
         table.setColumnExpandRatio(COL_TAMANIO, 0.20f);
+        table.setColumnExpandRatio(COL_CONTEXT_MENU, 0.10f);
         table.refreshRowCache();
         //setRowHeaderMode(Table.RowHeaderMode.INDEX);          //PARA ENUMERAR LAS FILAS
 
@@ -145,17 +156,28 @@ public class FileListLayout extends VerticalLayout implements View {
             }
         });
 
+//        table.setCellStyleGenerator((Table source, Object itemId, Object propertyId) -> {
+//            String stilo = "";
+//            if (propertyId != null
+//                    && (COL_CONTEXT_MENU.equals((String) propertyId))) {
+//                
+//                stilo = "black";
+//                menuBar.addStyleName(ValoTheme.BUTTON_DANGER);
+//            }
+//            return stilo;
+//        });
         return table;
     }
 
     private IndexedContainer crearContenedor(File directory) {
         idxCont = new IndexedContainer();
 
-        idxCont.addContainerProperty(COL_FILE, File.class, "");
         idxCont.addContainerProperty(COL_ICON, Image.class, "");
         idxCont.addContainerProperty(COL_NOMBRE, Label.class, "");
-        idxCont.addContainerProperty(COL_MODIFICADO, String.class, "");
         idxCont.addContainerProperty(COL_TAMANIO, String.class, "");
+        idxCont.addContainerProperty(COL_MODIFICADO, String.class, "");
+        idxCont.addContainerProperty(COL_CONTEXT_MENU, MenuBar.class, "");
+        idxCont.addContainerProperty(COL_FILE, File.class, "");
 
         List<File> files = component.directoryContents(directory);
 
@@ -164,11 +186,12 @@ public class FileListLayout extends VerticalLayout implements View {
                 this.file = fileRow;
 
                 Item item = idxCont.getItem(idxCont.addItem());
-                item.getItemProperty(COL_FILE).setValue(file);
                 item.getItemProperty(COL_ICON).setValue(buildIcon());
                 item.getItemProperty(COL_NOMBRE).setValue(getFileName());
-                item.getItemProperty(COL_MODIFICADO).setValue(getAtributos());
                 item.getItemProperty(COL_TAMANIO).setValue(getNumberOfElementsAndFileSize());
+                item.getItemProperty(COL_MODIFICADO).setValue(getAtributos());
+                item.getItemProperty(COL_CONTEXT_MENU).setValue(createButtonContextMenu());
+                item.getItemProperty(COL_FILE).setValue(file);
             }
         }
 
@@ -181,8 +204,8 @@ public class FileListLayout extends VerticalLayout implements View {
 //    }
     private Image buildIcon() {
         icon = new Image(null, getIconExtension());
-        icon.setWidth(30.0f, Unit.PIXELS);
-        icon.setHeight(31.0f, Unit.PIXELS);
+        icon.setWidth((file.isDirectory() ? 35.0f : 31.0f), Unit.PIXELS);
+        icon.setHeight((file.isDirectory() ? 33.0f : 39.0f), Unit.PIXELS);
         return icon;
     }
 
@@ -221,7 +244,7 @@ public class FileListLayout extends VerticalLayout implements View {
         Label lblName = new Label(file.getName());
         lblName.addStyleName(ValoTheme.LABEL_BOLD);
         lblName.addStyleName("noselect");
-        
+
         return lblName;
     }
 
@@ -251,16 +274,15 @@ public class FileListLayout extends VerticalLayout implements View {
         return fechaCreacion;
     }
 
+    public MenuBar createButtonContextMenu() {
+        btnContextMenu = new ButtonContextMenu(downloadInvisibleButton, file, viewLogicFile, viewLogicDirectory);
+        //menuBar.setVisible(true);
+        return btnContextMenu;
+    }
+
     @Subscribe
     public void browserResized(final BrowserResizeEvent event) {
-        // Some columns are collapsed when browser window width gets small
-        // enough to make the table fit better.
-        if (defaultColumnsVisible()) {
-            for (String propertyId : DEFAULT_COLLAPSIBLE) {
-                table.setColumnCollapsed(propertyId, Page.getCurrent()
-                        .getBrowserWindowWidth() < 800);
-            }
-        }
+        browserResized();
     }
 
     private boolean defaultColumnsVisible() {
@@ -274,8 +296,19 @@ public class FileListLayout extends VerticalLayout implements View {
         return result;
     }
 
+    private void browserResized() {
+        // Some columns are collapsed when browser window width gets small
+        // enough to make the table fit better.
+        if (defaultColumnsVisible()) {
+            for (String propertyId : DEFAULT_COLLAPSIBLE) {
+                table.setColumnCollapsed(propertyId, Page.getCurrent()
+                        .getBrowserWindowWidth() < 800);
+            }
+        }
+    }
+
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
     }
-
+    
 }

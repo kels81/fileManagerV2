@@ -6,17 +6,24 @@
 package com.mx.zoom.filebox.logic;
 
 import com.mx.zoom.filebox.utils.Notifications;
+import com.mx.zoom.filebox.utils.ZipUtils;
 import com.mx.zoom.filebox.view.schedule.FilesView;
+import com.vaadin.server.FileDownloader;
+import com.vaadin.server.FileResource;
+import com.vaadin.server.Page;
+import com.vaadin.ui.Button;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.FileUtils;
@@ -35,6 +42,38 @@ public class ScheduleDirectoryLogic {
 
     public ScheduleDirectoryLogic(FilesView view) {
         this.view = view;
+    }
+
+    public void downloadDirectory(File directory, Button dwnldInvisibleBtn) {
+        try {
+            File tmp = Files.createTempDirectory("zip").toFile();
+            Path sourceTemp = Paths.get(tmp.getAbsolutePath());
+            Boolean result = ZipUtils.zipDirectory(sourceTemp, directory);
+            System.out.println("result = " + result);
+
+            FileDownloader fileDownloader;
+            if (!dwnldInvisibleBtn.getExtensions().isEmpty()) {
+                fileDownloader = (FileDownloader) dwnldInvisibleBtn.getExtensions().toArray()[0];
+                if (dwnldInvisibleBtn.getExtensions().contains(fileDownloader)) {
+                    dwnldInvisibleBtn.removeExtension(fileDownloader);
+                    File[] files = tmp.getParentFile().listFiles();
+                    if (files.length != 0) {
+                        for (File file : files) {
+                            if (!tmp.getName().equals(file.getName())) {
+                                FileUtils.deleteDirectory(file);
+                            }
+                        }
+                    }
+                }
+            }
+            String zipFile = tmp.getPath().concat(File.separator).concat(directory.getName().concat(".zip"));
+            fileDownloader = new FileDownloader(new FileResource(new File(zipFile)));
+            fileDownloader.extend(dwnldInvisibleBtn);
+            Page.getCurrent().getJavaScript().execute("document.getElementById('DownloadButtonId').click();");
+            //FileUtils.deleteDirectory(tmp);
+        } catch (IOException ex) {
+            Logger.getLogger(ScheduleDirectoryLogic.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void moveDirectory(Path sourceDir, Path targetDir, File directory) {
@@ -92,6 +131,22 @@ public class ScheduleDirectoryLogic {
         }
     }
 
+//    public void zipDirectory(Path sourceDirectory, File directoryToZip) {
+//        try {
+//            Path source = Paths.get(directoryToZip.getParent());
+//            Boolean result = ZipUtils.zipDirectory(source, directoryToZip);
+//            // SE RECARGA LA PAGINA, PARA MOSTRAR EL ARCHIVO CARGADO
+//            String dir = sourceDirectory.getParent().toString();
+//            cleanAndDisplay(new File(dir));
+//            if (result) {
+//                notification.createSuccess("Se comprimio el archivo correctamente: " + directoryToZip.getName());
+//            } else {
+//                notification.createFailure("No se comprimio el archivo");
+//            }
+//        } catch (Exception e) {
+//        }
+//
+//    }
     public void zipDirectory(Path sourceDirectory, File directoryToZip) {
         try {
             String zipDirectoryName = directoryToZip.getName() + ".zip";
@@ -166,6 +221,16 @@ public class ScheduleDirectoryLogic {
         zipOutputStream.closeEntry();
 
         System.out.println("Regular file :" + parentName + inputFile.getName() + " is zipped to archive :" + zipOutputStream.toString());
+    }
+
+    public void createFolder(Path sourceDir, String name) {
+        File directory = new File(sourceDir + "\\" + name);
+        directory.mkdir();
+
+        // SE RECARGA LA PAGINA, PARA MOSTRAR EL ARCHIVO CARGADO
+        String dir = sourceDir.toString();
+        cleanAndDisplay(new File(dir));
+        notification.createSuccess("Se cargó con éxito");
     }
 
     public void cleanAndDisplay(File file) {

@@ -1579,6 +1579,26 @@ div.v-layout.v-horizontal.v-widget {
 	}
 	}
 
+.dashboard .v-grid-cell > .cr-component-cell {
+	display: flex;
+	align-items: center;
+	box-sizing: border-box;
+	height: 100%;
+	width: 100%;
+}
+
+.dashboard .v-grid-editor-cells .cr-editor-field {
+	padding-left: 18px;
+	padding-right: 18px;
+	height: 100%;
+	width: 100%;
+}
+
+.dashboard .v-grid-editor-cells .cr-editor-field .v-checkbox {
+	margin-left: 0px;
+	margin-right: 0px;
+}
+
 .dashboard.v-app, .dashboard.v-app-loading {
 	font: 300 16px/1.55 "Open Sans", sans-serif;
 	color: #464646;
@@ -11753,18 +11773,28 @@ div.v-layout.v-horizontal.v-widget {
 	background-color: #f5f5f5;
 }
 
-.dashboard .schedule .gridView .mainPanel .frame .labelInfo {
+.dashboard .schedule .gridView .mainPanel .frame .labelName {
 	font-size: 14px;
 	line-height: 1.2;
 	padding: 0 10px;
 }
 
-.dashboard .schedule .gridView[width-range~="0-700px"] .mainPanel {
+.dashboard .schedule .gridView .mainPanel .frame .labelInfo {
+	font-size: 12px;
+	line-height: 1.2;
+	padding: 0 10px;
+}
+
+.dashboard .schedule .gridView[width-range~="0-600px"] .mainPanel {
 	width: 100% !important;
 }
 
-.dashboard .schedule .gridView[width-range~="701px-"] .mainPanel {
-	width: 20% !important;
+.dashboard .schedule .gridView[width-range~="601px-1000px"] .mainPanel {
+	width: 50% !important;
+}
+
+.dashboard .schedule .gridView[width-range~="1001px-1920px"] .mainPanel {
+	width: 25% !important;
 }
 
 .dashboard .schedule .listView {
@@ -11772,16 +11802,6 @@ div.v-layout.v-horizontal.v-widget {
 	padding-bottom: 12.5px;
 	padding-left: 12.5px;
 	padding-right: 12.5px;
-}
-
-.dashboard .attachedlayout {
-	cursor: pointer;
-	position: relative;
-	padding-right: 20px;
-}
-
-.dashboard .attachedlayout:hover {
-	outline: 1px solid #5198df;
 }
 
 .dashboard .deleteBtn {
@@ -11807,17 +11827,23 @@ div.v-layout.v-horizontal.v-widget {
 	background: #ffffff;
 }
 
+.dashboard .attachedlayout {
+	cursor: pointer;
+	position: relative;
+	padding-right: 20px;
+}
+
 .dashboard .attachedlayout .deleteBtn {
 	position: absolute;
 	display: none;
 }
 
-.dashboard .attachedlayout:hover .deleteBtn {
-	display: block;
+.dashboard .attachedlayout:hover {
+	outline: 1px solid #5198df;
 }
 
-.dashboard .attachedfiles {
-	padding: 5px;
+.dashboard .attachedlayout:hover .deleteBtn {
+	display: block;
 }
 
 .dashboard .address-editor {
@@ -11856,6 +11882,15 @@ div.v-layout.v-horizontal.v-widget {
 	text-decoration: none;
 }
 
+.dashboard .v-widget.mytoken.tokenfield .v-csslayout div {
+	float: left;
+}
+
+.dashboard .v-widget.mytoken.tokenfield .v-csslayout .v-button-link {
+	margin: 0 1px 1px 0;
+	height: 37px;
+}
+
 .dashboard .tokentextfield .v-filterselect {
 	background: #ddd none repeat scroll 0 0;
 	border-radius: 4px;
@@ -11874,15 +11909,6 @@ div.v-layout.v-horizontal.v-widget {
 
 .dashboard .tokentextfield .v-filterselect .v-filterselect-button {
 	display: none;
-}
-
-.dashboard .v-widget.mytoken.tokenfield .v-csslayout div {
-	float: left;
-}
-
-.dashboard .v-widget.mytoken.tokenfield .v-csslayout .v-button-link {
-	margin: 0 1px 1px 0;
-	height: 37px;
 }
 
 .dashboard .v-table-header {
@@ -11927,12 +11953,48 @@ div.v-layout.v-horizontal.v-widget {
 	background: #E8F3FA;
 }
 
+.dashboard .v-table-cell-content-black {
+	background: black;
+	color: black;
+}
+
 .dashboard .v-label-noselect {
 	user-select: none;
 	-o-user-select: none;
 	-moz-user-select: none;
 	-khtml-user-select: none;
 	-webkit-user-select: none;
+}
+
+.dashboard .v-menubar-btn-contextmenu {
+	border: 1px solid #eee;
+	background: #fff;
+}
+
+.dashboard .v-menubar-btn-contextmenu:focus:after {
+	border-color: #eee;
+}
+
+.dashboard .v-menubar-btn-contextmenu  > .v-menubar-menuitem-selected {
+	background: #f7f7f7;
+	color: #181818;
+}
+
+.dashboard .v-menubar-btn-contextmenu  > .v-menubar-menuitem .v-icon {
+	margin: 0px;
+	cursor: inherit;
+}
+
+.dashboard .v-menubar-btn-contextmenu .v-menubar-submenu-indicator {
+	display: none;
+}
+
+.dashboard .v-menubar-btn-contextmenu .v-menubar-submenu-indicator  + .v-menubar-menuitem-caption:after {
+	display: none;
+}
+
+.dashboard .v-menubar-btn-contextmenu .v-menubar-submenu-indicator  + .v-menubar-menuitem-caption:empty:after {
+	display: none;
 }
 
 .dashboard .transactions .viewheader {

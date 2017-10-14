@@ -116,7 +116,7 @@ public class Components {
         //btn.setEnabled(false);
         return btn;
     }
-
+    
     public MenuBar createMenuBar() {
         MenuBar menu = new MenuBar();
         menu.addStyleName(ValoTheme.MENUBAR_SMALL);

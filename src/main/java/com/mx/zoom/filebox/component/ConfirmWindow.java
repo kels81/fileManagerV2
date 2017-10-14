@@ -9,6 +9,7 @@ import com.mx.zoom.filebox.logic.ScheduleDirectoryLogic;
 import com.mx.zoom.filebox.logic.ScheduleFileLogic;
 import com.mx.zoom.filebox.utils.Components;
 import com.vaadin.event.ShortcutAction;
+import com.vaadin.server.Page;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Alignment;
@@ -69,12 +70,14 @@ public class ConfirmWindow extends Window {
         content.addComponent(buildFooter(file));
 
         setContent(content);
+        //Page.getCurrent().getStyles().add(".v-verticallayout {border: 1px solid blue;} .v-verticallayout .v-slot {border: 1px solid red;}");
     }
 
     private Component body() {
         body = new VerticalLayout();
         body.setCaption("Confirmar");
-        body.setWidth(100.0f, Sizeable.Unit.PERCENTAGE);
+        //body.setWidth(100.0f, Sizeable.Unit.PERCENTAGE);
+        body.setSizeFull();
         body.setMargin(true);
 
         Label messageLbl = new Label("¿Está seguro de que desea eliminar este archivo?");

@@ -176,13 +176,15 @@ public class EmailWindow extends Window implements View {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 //System.out.println("para: " + paraTxt.getValue());
-                //boolean enviar = (StringUtils.isNotBlank(paraTxt.getValue()) && StringUtils.isNotBlank(asuntoTxt.getValue()) && StringUtils.isNotBlank(cuerpoCorreo.getValue()));
                 boolean enviar = (StringUtils.isNotBlank(txtPara.getValue().toString()) && StringUtils.isNotBlank(txtAsunto.getValue()) && StringUtils.isNotBlank(cuerpoCorreo.getValue()));
+                System.out.println("fdfdfdfdfd");
                 if (enviar) {
                     Mail sendMail = new Mail();
 
                     String asunto = txtAsunto.getValue().trim();
+                    System.out.println("asunto = " + asunto);
                     String mensaje = cuerpoCorreo.getValue();
+                    System.out.println("mensaje = " + mensaje);
                     //List<String> receptores = new ArrayList<String>();
                     //receptores.add(paraTxt.getValue());
 
@@ -194,11 +196,12 @@ public class EmailWindow extends Window implements View {
                         Component c = filesAttached.getComponent(i);
                         adjuntos.add(filesAttached.getComponent(i).toString());
                     }
+                    System.out.println("adjuntos = " + adjuntos);
 
                     boolean envio = sendMail.enviarSpring(asunto, receptores, mensaje, adjuntos);
                     System.out.println("envio = " + envio);
 
-                    String message = envio ? "Se envío con Éxito" : "Problemas con el envío";
+                    String message = envio ? "Se envío con éxito" : "Problemas con el envío";
                     notification.createSuccess(message);
 
                     close();

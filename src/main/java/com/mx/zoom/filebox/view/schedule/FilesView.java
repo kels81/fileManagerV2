@@ -1,6 +1,5 @@
 package com.mx.zoom.filebox.view.schedule;
 
-import com.google.common.collect.Lists;
 import com.mx.zoom.filebox.component.EmailWindow;
 import com.mx.zoom.filebox.component.FileGridLayout;
 import com.mx.zoom.filebox.component.FileListLayout;
@@ -54,6 +53,7 @@ public final class FilesView extends VerticalLayout implements View {
     private Button btnListView;
     private Button btnGridView;
     private Label lblArrow;
+    private Label lblPath;
     private TextField txtSearch;
     private final Components component = new Components();
     private Component directoryContent;
@@ -70,7 +70,7 @@ public final class FilesView extends VerticalLayout implements View {
     private FileGridLayout fileGrid;
     private FileListLayout fileList;
 
-    private Boolean selected = true;
+    private Boolean selected = false;
 
     private Table table;
     private ThemeResource iconResource;
@@ -165,7 +165,7 @@ public final class FilesView extends VerticalLayout implements View {
         MenuBar.MenuItem menu = menubar.addItem("Nuevo", null);
         menu.setIcon(FontAwesome.PLUS);
         menu.addItem("Carpeta", FontAwesome.FOLDER_O, (MenuBar.MenuItem selectedItem) -> {
-            NewFolderWindow newFolderWindow = new NewFolderWindow(viewLogicFile, directory);
+            NewFolderWindow newFolderWindow = new NewFolderWindow(viewLogicDirectory, directory);
             Window w = newFolderWindow;
             UI.getCurrent().addWindow(w);
             w.focus();
@@ -190,7 +190,8 @@ public final class FilesView extends VerticalLayout implements View {
         //viewButtons.setSpacing(true);
 
         btnListView = component.createButtonIconTiny();
-        btnListView.setIcon(FontAwesome.TH_LIST);
+        //btnListView.setIcon(FontAwesome.TH_LIST);
+        btnListView.setIcon(FontAwesome.BARS);
         btnListView.addStyleName(setStyle(selected));
         btnListView.setEnabled(selected);
         btnListView.setDescription("Vista Lista");
@@ -217,16 +218,18 @@ public final class FilesView extends VerticalLayout implements View {
         return viewButtons;
     }
 
-    private Component buildPath(File directory) {
+    private Component buildPath(File fileDirectory) {
         rootPath = new HorizontalLayout();
 
-        List<File> listDirectories = getListDirectories(directory);
+        List<File> listDirectories = getListDirectories(fileDirectory);
         int i = 1;
-        for (File fileDirectory : listDirectories) {
-            btnFolder = component.createButtonPath(fileDirectory.getName());
+       for (File directory : listDirectories) {
+            btnFolder = component.createButtonPath(directory.getName());
+            btnFolder.setEnabled((i != listDirectories.size()));
+            btnFolder.addStyleName((i == listDirectories.size() ? "labelColored" : ""));
             btnFolder.addClickListener(event -> {
                 //System.out.println("evnt: "+event.getComponent().getCaption());
-                cleanAndDisplay(fileDirectory);
+                cleanAndDisplay(directory);
             });
             rootPath.addComponent(btnFolder);
             if (i != listDirectories.size()) {
@@ -243,9 +246,11 @@ public final class FilesView extends VerticalLayout implements View {
     private Component selectView(Boolean selected, File pathDirectory) {
         Component viewSelected = null;
         if (selected) {
-            viewSelected = buildGridView(pathDirectory);
+            //viewSelected = buildGridView(pathDirectory);
+            viewSelected = new FileGridLayout(viewLogicFile, viewLogicDirectory, pathDirectory);
         } else {
-            viewSelected = buildListView(pathDirectory);
+            //viewSelected = buildListView(pathDirectory);
+            viewSelected = new FileListLayout(viewLogicFile, viewLogicDirectory, pathDirectory);
         }
 
         return viewSelected;
@@ -293,20 +298,21 @@ public final class FilesView extends VerticalLayout implements View {
     private List<File> getListDirectories(File directory) {
         List<File> listDirectories = new ArrayList<>();
         String[] arrayDirectories = directory.getPath().split(Constantes.SEPARADOR);
-        int idxArchivos = Arrays.asList(arrayDirectories).indexOf(Constantes.ROOT_DIR);
+        int idxArchivos = Arrays.asList(arrayDirectories).indexOf(Constantes.ROOT_DIRECTORY);
         String[] newArrayDirectories = Arrays.copyOfRange(arrayDirectories, idxArchivos, arrayDirectories.length);
         StringBuilder newPath = new StringBuilder();
         int i = 1;
         for (String dirName : newArrayDirectories) {
-            int fin = directory.getPath().indexOf(dirName);
-            listDirectories.add(new File(directory.getPath().substring(0, fin + dirName.length())));
-             newPath.append(dirName);
+//            int fin = directory.getPath().indexOf(dirName);
+//            listDirectories.add(new File(directory.getPath().substring(0, fin + dirName.length())));
+            newPath.append(dirName);
             if (i != newArrayDirectories.length) {
                 newPath.append("\\");
             }
+            listDirectories.add(new File(Constantes.PATH_BASE + newPath.toString()));
             i++;
         }
-        //System.out.println("newPath = " + newPath.toString());
+        System.out.println("newPath = " + newPath.toString());
         return listDirectories;
     }
 

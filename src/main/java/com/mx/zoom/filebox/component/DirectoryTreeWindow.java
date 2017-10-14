@@ -83,7 +83,7 @@ public class DirectoryTreeWindow extends Window {
 
     private HorizontalLayout tree() {
         root = new HorizontalLayout();
-        root.setCaption("Archivos");
+        root.setCaption(Constantes.ROOT_DIRECTORY);
         root.setMargin(true);
 
         Container generateContainer = getDirectoryContainer(origenPath);

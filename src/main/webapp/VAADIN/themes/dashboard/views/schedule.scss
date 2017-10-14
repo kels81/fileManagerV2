@@ -48,8 +48,13 @@
                         background-color: #f5f5f5;
                     }
 
-                    .labelInfo {
+                    .labelName {
                         font-size: $v-font-size--small;
+                        line-height: 1.2;
+                        padding: 0 10px
+                    }
+                    .labelInfo {
+                        font-size: $v-font-size--tiny;
                         line-height: 1.2;
                         padding: 0 10px
                     }
@@ -57,15 +62,21 @@
                 }
             }
 
-            &[width-range~="0-700px"] {
+            @include width-range($max:600px) {
                 .mainPanel {
                     width: 100% !important;
                 }
             }
 
-            &[width-range~="701px-"] {
+            @include width-range(601px, 1000px) {
                 .mainPanel {
-                    width: 20% !important;
+                    width: 50% !important;
+                }
+            }
+            
+            @include width-range(1001px, 1920px) {
+                .mainPanel {
+                    width: 25% !important;
                 }
             }
 
@@ -79,58 +90,40 @@
         }
     }
 
-    .attachedlayout {
-        cursor: pointer;
-        position: relative;
-        padding-right: 20px;
-
-        &:hover {
-            outline: 1px solid #5198df;
-        }
-    }
-
     .deleteBtn {
         width: 16px;
         height: 19px;
-        //border-radius: 10px;
-        //background: #73767a;
-        //color: #fff;
         color: #197de1;
-        /*font: inherit;*/
         font-weight: 600;
         font-size: 18px;
         line-height: 1;
-        /*text-shadow: 0 1px 0 rgba(0,0,0,.25);*/
         text-align: center;
         cursor: default;
-        //@include box-shadow(0 2px 4px rgba(0,0,0,.5));
+        &:hover {
+            background: #e3f2fd;
+        }
+        &:focus {
+            outline: none;
+        }
+        &:active {
+            background: #ffffff;
+        }
     }
 
-    .deleteBtn:hover {
-        //background: #4e5153;
-        background: #e3f2fd;
-    }
-
-    .deleteBtn:focus {
-        outline: none;
-    }
-
-    .deleteBtn:active {
-        //background: #3c3f40;
-        background: #ffffff;
-    }
-
-    .attachedlayout .deleteBtn {
-        position: absolute;
-        display: none;
-    }
-
-    .attachedlayout:hover .deleteBtn {
-        display: block;
-    }
-
-    .attachedfiles {
-        padding: round($view-padding / 5);
+    .attachedlayout {
+        .deleteBtn {
+            position: absolute;
+            display: none;
+        }
+        &:hover {
+            .deleteBtn {
+                display: block;
+            }
+            outline: 1px solid #5198df;
+        }
+        cursor: pointer;
+        position: relative;
+        padding-right: 20px;
     }
 
     .address-editor {
@@ -179,6 +172,15 @@
             color: #197de1;
             text-decoration: none;
         }
+        .v-csslayout {
+            div {
+                float: left;
+            }
+            .v-button-link {
+                margin: 0 1px 1px 0;
+                height: 37px;
+            }
+        }
     }
 
     .tokentextfield .v-filterselect {
@@ -198,17 +200,6 @@
             display: none;
         }
     }
-
-    .v-widget.mytoken.tokenfield .v-csslayout {
-        div {
-            float: left;
-        }
-        .v-button-link {
-            margin: 0 1px 1px 0;
-            height: 37px;
-        }
-    }
-
 
     .v-table-header {
         color: #434343;
@@ -233,7 +224,7 @@
     .v-table-row:hover, .v-table-row-odd:hover {
         background: #F6FAFD;
     }
-    
+
     .v-table-cell-wrapper {
         user-select: none;
         -o-user-select:none;
@@ -254,12 +245,47 @@
         background: #E8F3FA;
     }
 
+    .v-table-cell-content-black{
+        background: black;
+        color: black;
+    }
+
+
     .v-label-noselect {
         user-select: none;
         -o-user-select:none;
         -moz-user-select: none;
         -khtml-user-select: none;
         -webkit-user-select: none;
+    }
+
+    .v-menubar-btn-contextmenu {
+        border: 1px solid #eee;
+        background: #fff;
+
+        &:focus:after {
+            border-color: #eee;
+        }
+        > .v-menubar-menuitem-selected {
+            //border: 1px solid #eee;
+            background: #f7f7f7;
+            color:  #181818;
+        }
+        > .v-menubar-menuitem .v-icon {
+            margin: 0px;
+            cursor: inherit;
+        }
+        .v-menubar-submenu-indicator {
+            display: none;
+            + .v-menubar-menuitem-caption {
+                &:after {
+                    display: none;
+                }
+                &:empty:after {
+                    display: none;
+                }
+            }
+        }
     }
 
 }
