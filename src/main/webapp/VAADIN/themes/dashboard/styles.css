@@ -11753,6 +11753,10 @@ div.v-layout.v-horizontal.v-widget {
 	padding-right: 12.5px;
 }
 
+.dashboard .schedule .v-slot-gridView {
+	overflow: auto;
+}
+
 .dashboard .schedule .gridView {
 	padding-bottom: 12.5px;
 	padding-left: 12.5px;
@@ -11945,7 +11949,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .dashboard .v-table-compact .v-table-cell-content, .dashboard .v-table-small .v-table-cell-content {
-	height: 50px;
+	height: 51.5px;
 }
 
 .dashboard .v-table tr.v-selected.v-selected {

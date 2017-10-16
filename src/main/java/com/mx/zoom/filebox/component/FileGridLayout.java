@@ -25,7 +25,6 @@ import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import java.io.File;
@@ -39,7 +38,7 @@ import org.apache.commons.lang3.ArrayUtils;
  *
  * @author Edrd
  */
-public class FileGridLayout extends CssLayout implements LayoutClickListener {
+public class FileGridLayout extends CssLayout {
 //public class FileGridLayout extends Panel implements LayoutClickListener {
 
     private HorizontalLayout frame;
@@ -61,25 +60,25 @@ public class FileGridLayout extends CssLayout implements LayoutClickListener {
     private final ScheduleDirectoryLogic viewLogicDirectory;
 
     public FileGridLayout(ScheduleFileLogic mosaicoFileLogic, ScheduleDirectoryLogic mosaicoDirectoryLogic, File file) {
-        super();
         this.viewLogicFile = mosaicoFileLogic;
         this.viewLogicDirectory = mosaicoDirectoryLogic;
         this.widthPage = Page.getCurrent().getBrowserWindowWidth();
 
         addStyleName("gridView");
-        setWidth(100.0f, Sizeable.Unit.PERCENTAGE);
+        setSizeFull();
+//        setWidth(100.0f, Sizeable.Unit.PERCENTAGE);
         Responsive.makeResponsive(this);
 
         File currentDir = new File(file.getAbsolutePath());
         List<File> files = (List<File>) component.directoryContents(currentDir);
 
-        for (File fileComp : files) {
-            this.file = fileComp;
-            addComponent(buildGrid());
+        for (File file_ : files) {
+            this.file = file_;
+            addComponent(buildGrid(file_));
         }
 
-        System.out.println("width-->" + Page.getCurrent().getBrowserWindowWidth());
-        System.out.println("height-->" + Page.getCurrent().getBrowserWindowHeight());
+//        System.out.println("width-->" + Page.getCurrent().getBrowserWindowWidth());
+//        System.out.println("height-->" + Page.getCurrent().getBrowserWindowHeight());
 
         //BUTTON PARA PODER DESCARGAR ARCHIVOS POR MEDIO DEL CONTEXT MENU
         downloadInvisibleButton.setId("DownloadButtonId");
@@ -87,24 +86,39 @@ public class FileGridLayout extends CssLayout implements LayoutClickListener {
         addComponent(downloadInvisibleButton);
     }
 
-    private Component buildGrid() {
+    private Component buildGrid(File file) {
+//        this.file = file;
         mainPanel = new CssLayout();
         mainPanel.addStyleName("mainPanel");
-        mainPanel.addComponent(buildFrame());
+        mainPanel.addComponent(buildFrame(file));
 
         return mainPanel;
     }
 
-    private HorizontalLayout buildFrame() {
+    private HorizontalLayout buildFrame(File file_) {
         frame = new HorizontalLayout();
         frame.addStyleName("frame");
         frame.setMargin(true);
         frame.addStyleName(ValoTheme.LAYOUT_CARD);
         frame.setWidth(100.0f, Sizeable.Unit.PERCENTAGE);
-        frame.addLayoutClickListener(this);
+        frame.addLayoutClickListener(new LayoutClickListener() {
+            @Override
+            public void layoutClick(LayoutEvents.LayoutClickEvent event) {
+                if (event.isDoubleClick()) {
+                    if (file_.isDirectory()) {
+                        viewLogicFile.cleanAndDisplay(file_);
+                    } else if (file_.isFile()) {
+                        Notification.show("Ver archivo: " + file_.getName());
+//                        Window w = new ViewerWindow(file);;
+//                        UI.getCurrent().addWindow(w);
+//                        w.focus();
+                    }
+                }
+            }
+        });
         frame.addComponent(buildMosaico());
 
-        MenuBar btnContextMenu = new ButtonContextMenu(downloadInvisibleButton, file, viewLogicFile, viewLogicDirectory);
+        MenuBar btnContextMenu = new ButtonContextMenu(downloadInvisibleButton, file_, viewLogicFile, viewLogicDirectory);
         frame.addComponent(btnContextMenu);
         frame.setComponentAlignment(btnContextMenu, Alignment.TOP_RIGHT);
 
@@ -208,22 +222,6 @@ public class FileGridLayout extends CssLayout implements LayoutClickListener {
         numberOfElementsAndFileSize.addStyleName(ValoTheme.LABEL_TINY);
 
         return numberOfElementsAndFileSize;
-    }
-
-    @Override
-    public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-        //if (event.getButton() == MouseEventDetails.MouseButton.LEFT) {
-        if (event.isDoubleClick()) {
-            if (file.isDirectory()) {
-                viewLogicFile.cleanAndDisplay(file);
-            } else if (file.isFile()) {
-                Notification.show("Ver archivo: " + file.getName());
-                //downloadContents(file);
-//                        Window w = new ViewerWindow(file);;
-//                        UI.getCurrent().addWindow(w);
-//                        w.focus();
-            }
-        }
     }
 
 }

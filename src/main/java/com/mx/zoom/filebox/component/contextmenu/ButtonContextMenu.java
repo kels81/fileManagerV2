@@ -10,28 +10,15 @@ import com.mx.zoom.filebox.component.DirectoryTreeFolderWindow;
 import com.mx.zoom.filebox.component.EditWindow;
 import com.mx.zoom.filebox.logic.ScheduleDirectoryLogic;
 import com.mx.zoom.filebox.logic.ScheduleFileLogic;
-import com.vaadin.server.Extension;
-import com.vaadin.server.FileDownloader;
-import com.vaadin.server.FileResource;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.server.Page;
-import com.vaadin.server.StreamResource;
-import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
-import javax.imageio.ImageIO;
 
 /**
  *

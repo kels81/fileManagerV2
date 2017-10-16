@@ -14,20 +14,16 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.Sizeable;
-import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.ProgressBar;
-import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -42,18 +38,14 @@ import pl.exsio.plupload.PluploadError;
 import pl.exsio.plupload.PluploadFile;
 
 @SuppressWarnings("serial")
-//public final class FilesView extends Panel implements View {
 public final class FilesView extends VerticalLayout implements View {
 
-    private File path;
     private final File origenPath;
-    private final VerticalLayout content;
     private HorizontalLayout rootPath;
     private Button btnFolder;
     private Button btnListView;
     private Button btnGridView;
     private Label lblArrow;
-    private Label lblPath;
     private TextField txtSearch;
     private final Components component = new Components();
     private Component directoryContent;
@@ -67,14 +59,7 @@ public final class FilesView extends VerticalLayout implements View {
     private final ScheduleFileLogic viewLogicFile = new ScheduleFileLogic(this);
     private final ScheduleDirectoryLogic viewLogicDirectory = new ScheduleDirectoryLogic(this);
 
-    private FileGridLayout fileGrid;
-    private FileListLayout fileList;
-
-    private Boolean selected = false;
-
-    private Table table;
-    private ThemeResource iconResource;
-    private Image icon;
+    private Boolean selected = true;
 
     public FilesView() {
         this.origenPath = new File(Constantes.ROOT_PATH);
@@ -83,24 +68,19 @@ public final class FilesView extends VerticalLayout implements View {
         setSizeFull();
         addStyleName("schedule");
 
-        content = new VerticalLayout();
-        content.addComponent(buildHeader());
-        content.addComponent(buildToolBar(origenPath));
-        content.addComponent(buildViewsBar(origenPath));
+        addComponent(buildHeader());
+        addComponent(buildToolBar(origenPath));
+        addComponent(buildViewsBar(origenPath));
 
-        //directoryContent = buildGridView(origenPath);
         directoryContent = selectView(selected, origenPath);
-        content.addComponent(directoryContent);
-        content.setExpandRatio(directoryContent, 1);
+        addComponent(directoryContent);
+        setExpandRatio(directoryContent, 1);
 
         //progressBar.setCaption("Progress");
         //addComponent(progressBar);
-        //[ GRID VIEW ]
-        //setContent(content);
-        //[ LIST VIEW ]
-        addComponent(content);
-
-        Responsive.makeResponsive(content);
+     
+        Responsive.makeResponsive(this);
+//        Page.getCurrent().getStyles().add(".v-verticallayout {border: 1px solid blue;} .v-verticallayout .v-slot {border: 1px solid red;}");
     }
 
     private Component buildHeader() {
@@ -223,7 +203,7 @@ public final class FilesView extends VerticalLayout implements View {
 
         List<File> listDirectories = getListDirectories(fileDirectory);
         int i = 1;
-       for (File directory : listDirectories) {
+        for (File directory : listDirectories) {
             btnFolder = component.createButtonPath(directory.getName());
             btnFolder.setEnabled((i != listDirectories.size()));
             btnFolder.addStyleName((i == listDirectories.size() ? "labelColored" : ""));
@@ -246,53 +226,12 @@ public final class FilesView extends VerticalLayout implements View {
     private Component selectView(Boolean selected, File pathDirectory) {
         Component viewSelected = null;
         if (selected) {
-            //viewSelected = buildGridView(pathDirectory);
             viewSelected = new FileGridLayout(viewLogicFile, viewLogicDirectory, pathDirectory);
         } else {
-            //viewSelected = buildListView(pathDirectory);
             viewSelected = new FileListLayout(viewLogicFile, viewLogicDirectory, pathDirectory);
         }
 
         return viewSelected;
-    }
-
-    private Component buildGridView(File pathDirectory) {
-        path = pathDirectory;
-
-        CssLayout gridView = new CssLayout();
-        gridView.addStyleName("gridView");
-        gridView.setWidth(100.0f, Sizeable.Unit.PERCENTAGE);
-        Responsive.makeResponsive(gridView);
-
-        File currentDir = new File(path.getAbsolutePath());
-        List<File> files = (List<File>) component.directoryContents(currentDir);
-
-//        files.stream().map((file) -> {
-//            fileGrid = new FileGridLayout(viewLogicFile, viewLogicDirectory, file);
-//            return fileGrid;
-//        }).forEach((fileGrid) -> {
-//            gridView.addComponent(fileGrid);
-//        });
-        for (final File file : files) {
-            fileGrid = new FileGridLayout(viewLogicFile, viewLogicDirectory, file);
-            gridView.addComponent(fileGrid);
-        }
-
-        return gridView;
-    }
-
-    private Component buildListView(File pathDirectory) {
-//        VerticalLayout listView = new VerticalLayout();
-//        listView.setWidth(100.0f, Sizeable.Unit.PERCENTAGE);
-//        listView.addStyleName("listView");
-//        Responsive.makeResponsive(listView);
-//
-//        fileList = new FileListLayout(viewLogicFile, viewLogicDirectory, pathDirectory);
-//
-//        listView.addComponent(fileList);
-
-        //return listView;
-        return new FileListLayout(viewLogicFile, viewLogicDirectory, pathDirectory);
     }
 
     private List<File> getListDirectories(File directory) {
@@ -317,13 +256,21 @@ public final class FilesView extends VerticalLayout implements View {
     }
 
     public void cleanAndDisplay(File directory) {
-        content.removeAllComponents();
-        content.addComponent(buildHeader());
-        content.addComponent(buildToolBar(directory));
-        content.addComponent(buildViewsBar(directory));
+//        content.removeAllComponents();
+//        content.addComponent(buildHeader());
+//        content.addComponent(buildToolBar(directory));
+//        content.addComponent(buildViewsBar(directory));
+//        directoryContent = selectView(selected, directory);
+//        content.addComponent(directoryContent);
+//        content.setExpandRatio(directoryContent, 1);
+
+        removeAllComponents();
+        addComponent(buildHeader());
+        addComponent(buildToolBar(directory));
+        addComponent(buildViewsBar(directory));
         directoryContent = selectView(selected, directory);
-        content.addComponent(directoryContent);
-        content.setExpandRatio(directoryContent, 1);
+        addComponent(directoryContent);
+        setExpandRatio(directoryContent, 1);
     }
 
     private Plupload uploadContents(File directory) {
@@ -335,7 +282,7 @@ public final class FilesView extends VerticalLayout implements View {
         uploader.addStyleName(ValoTheme.BUTTON_PRIMARY);
         uploader.addStyleName(ValoTheme.BUTTON_SMALL);
         uploader.setUploadPath(uploadPath);
-        uploader.setMaxFileSize("5mb");
+        uploader.setMaxFileSize("15mb");
 
 //show notification after file is uploaded
         uploader.addFileUploadedListener(new Plupload.FileUploadedListener() {

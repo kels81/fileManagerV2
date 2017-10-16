@@ -14,8 +14,8 @@ public enum FileFormats {
     WORD(new String[]{"doc", "docx", "dot", "dotx", "docm", "dotm", "rtf"}),
     EXCEL(new String[]{"xls", "xlsx", "xlsm", "xlsb"}),
     POWERPOINT(new String[]{"ppt", "pptx", "pps", "ppsx"}),
-    VISIO(new String[]{"vsd", "vdx", "vss", "vsx", "vst", "vtx", "vsdx", "vdw"}),
-    PROJECT(new String[]{"mpp", "mpt"}),
+    VISIO(new String[]{"vsd", "vdx", "vss", "vsx", "vst", "vtx", "vsdx", "vdw"}),   //NO HAY ICON
+    PROJECT(new String[]{"mpp", "mpt"}),    //NO HAY ICON
     IMAGEN(new String[]{"bmp", "gif", "jpg", "png", "tiff", "multi-page tiff", "webp"}),
     CODIGO(new String[]{"html", "mht", "mhtml", "xml"}),
     AUDIO(new String[]{"mp3", "aac", "ogg", "wma", "flac", "alac", "wma"}),

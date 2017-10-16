@@ -22,6 +22,7 @@ import com.vaadin.server.Page;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
@@ -46,7 +47,6 @@ import org.apache.commons.lang3.ArrayUtils;
  *
  * @author Edrd
  */
-//public class FileListLayout extends Table {
 public class FileListLayout extends VerticalLayout implements View {
 
     private File file;
@@ -56,7 +56,6 @@ public class FileListLayout extends VerticalLayout implements View {
 
     private IndexedContainer idxCont;
     private Table table;
-    private MenuBar btnContextMenu;
     private final Button downloadInvisibleButton = new Button();
 
     private final ScheduleFileLogic viewLogicFile;
@@ -81,10 +80,12 @@ public class FileListLayout extends VerticalLayout implements View {
         addStyleName("listView");
         DashboardEventBus.register(this);   //NECESARIO PARA CONOCER LA ORIENTACION Y RESIZE DEL BROWSER
 
-        addComponent(buildTable(file));
+        Component table = buildTable(file);
+        addComponent(table);
+        setExpandRatio(table, 1);
         browserResized();
-        System.out.println("width-->" + Page.getCurrent().getBrowserWindowWidth());
-        System.out.println("height-->" + Page.getCurrent().getBrowserWindowHeight());
+//        System.out.println("width-->" + Page.getCurrent().getBrowserWindowWidth());
+//        System.out.println("height-->" + Page.getCurrent().getBrowserWindowHeight());
         
         //BUTTON PARA PODER DESCARGAR ARCHIVOS POR MEDIO DEL CONTEXT MENU
         downloadInvisibleButton.setId("DownloadButtonId");
@@ -105,10 +106,10 @@ public class FileListLayout extends VerticalLayout implements View {
         table = new Table();
         table.setContainerDataSource(crearContenedor(file));
         table.setSizeFull();
-        table.setPageLength(8);
+//        table.setPageLength(8);
         table.setImmediate(true);
         table.setSelectable(true);
-        table.setMultiSelect(true);
+//        table.setMultiSelect(true);
         table.addStyleName(ValoTheme.TABLE_BORDERLESS);
         table.addStyleName(ValoTheme.TABLE_NO_STRIPES);
         table.addStyleName(ValoTheme.TABLE_NO_VERTICAL_LINES);
@@ -145,7 +146,6 @@ public class FileListLayout extends VerticalLayout implements View {
                             viewLogicFile.cleanAndDisplay(file);
                         } else if (file.isFile()) {
                             Notification.show("Ver archivo: " + file.getName());
-                            //downloadContents(file);
 //                        Window w = new ViewerWindow(file);;
 //                        UI.getCurrent().addWindow(w);
 //                        w.focus();
@@ -180,7 +180,6 @@ public class FileListLayout extends VerticalLayout implements View {
         idxCont.addContainerProperty(COL_FILE, File.class, "");
 
         List<File> files = component.directoryContents(directory);
-
         if (!files.isEmpty()) {
             for (File fileRow : files) {
                 this.file = fileRow;
@@ -275,9 +274,7 @@ public class FileListLayout extends VerticalLayout implements View {
     }
 
     public MenuBar createButtonContextMenu() {
-        btnContextMenu = new ButtonContextMenu(downloadInvisibleButton, file, viewLogicFile, viewLogicDirectory);
-        //menuBar.setVisible(true);
-        return btnContextMenu;
+        return new ButtonContextMenu(downloadInvisibleButton, file, viewLogicFile, viewLogicDirectory);
     }
 
     @Subscribe
@@ -288,6 +285,7 @@ public class FileListLayout extends VerticalLayout implements View {
     private boolean defaultColumnsVisible() {
         boolean result = true;
         for (String propertyId : DEFAULT_COLLAPSIBLE) {
+//            table.setColumnCollapsingAllowed(true);
             if (table.isColumnCollapsed(propertyId) == Page.getCurrent()
                     .getBrowserWindowWidth() < 800) {
                 result = false;

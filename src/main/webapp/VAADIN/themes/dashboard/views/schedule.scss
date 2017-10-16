@@ -28,6 +28,9 @@
             padding-right: $view-padding / 2;
         }
 
+        .v-slot-gridView {
+            overflow: auto;
+        }
 
 
         .gridView {
@@ -73,7 +76,7 @@
                     width: 50% !important;
                 }
             }
-            
+
             @include width-range(1001px, 1920px) {
                 .mainPanel {
                     width: 25% !important;
@@ -237,7 +240,7 @@
         outline: 1px solid #F6FAFD;
     }
     .v-table-compact .v-table-cell-content, .v-table-small .v-table-cell-content{
-        height: 50px;
+        height: 51.5px;
     }
 
     .v-table tr.v-selected.v-selected {

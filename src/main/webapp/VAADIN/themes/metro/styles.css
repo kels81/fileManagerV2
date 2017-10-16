@@ -13204,6 +13204,10 @@ div.v-layout.v-horizontal.v-widget {
 	padding-right: 18.5px;
 }
 
+.metro .schedule .v-slot-gridView {
+	overflow: auto;
+}
+
 .metro .schedule .gridView {
 	padding-bottom: 18.5px;
 	padding-left: 18.5px;
@@ -13396,7 +13400,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .metro .v-table-compact .v-table-cell-content, .metro .v-table-small .v-table-cell-content {
-	height: 50px;
+	height: 51.5px;
 }
 
 .metro .v-table tr.v-selected.v-selected {
