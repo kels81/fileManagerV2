@@ -68,9 +68,9 @@ public final class FilesView extends VerticalLayout implements View {
         setSizeFull();
         addStyleName("schedule");
 
-        addComponent(buildHeader());
+        addComponent(buildHeader(origenPath));
         addComponent(buildToolBar(origenPath));
-        addComponent(buildViewsBar(origenPath));
+        //addComponent(buildViewsBar(origenPath));
 
         directoryContent = selectView(selected, origenPath);
         addComponent(directoryContent);
@@ -83,11 +83,19 @@ public final class FilesView extends VerticalLayout implements View {
 //        Page.getCurrent().getStyles().add(".v-verticallayout {border: 1px solid blue;} .v-verticallayout .v-slot {border: 1px solid red;}");
     }
 
-    private Component buildHeader() {
-        HorizontalLayout header = new HorizontalLayout(buildSearchBar());
+    private Component buildHeader(File directory) {
+        Component searchBar = buildSearchBar();
+        Component mainButtons = buildMainButtons(directory);
+        
+        HorizontalLayout header = new HorizontalLayout();
         header.setWidth(100.0f, Sizeable.Unit.PERCENTAGE);
         header.addStyleName("viewheader");
         //header.setSpacing(true);
+        
+        header.addComponents(searchBar, mainButtons);
+        //header.setExpandRatio(mainButtons, 1.0f);
+        header.setComponentAlignment(mainButtons, Alignment.MIDDLE_RIGHT);
+        
         Responsive.makeResponsive(header);
 
         return header;
@@ -112,11 +120,13 @@ public final class FilesView extends VerticalLayout implements View {
         toolBar.addStyleName("toolbar");
 
         Component path = buildPath(directory);
-        Component mainButtons = buildMainButtons(directory);
+        Component typesViews = buildViewsBar(directory);
+        //Component mainButtons = buildMainButtons(directory);
 
-        toolBar.addComponents(path, mainButtons);
-        toolBar.setExpandRatio(mainButtons, 1.0f);
-        toolBar.setComponentAlignment(mainButtons, Alignment.MIDDLE_RIGHT);
+        toolBar.addComponents(path, typesViews);
+        toolBar.setExpandRatio(typesViews, 1.0f);
+//        toolBar.setExpandRatio(mainButtons, 1.0f);
+//        toolBar.setComponentAlignment(mainButtons, Alignment.MIDDLE_RIGHT);
 
         return toolBar;
     }
@@ -256,18 +266,9 @@ public final class FilesView extends VerticalLayout implements View {
     }
 
     public void cleanAndDisplay(File directory) {
-//        content.removeAllComponents();
-//        content.addComponent(buildHeader());
-//        content.addComponent(buildToolBar(directory));
-//        content.addComponent(buildViewsBar(directory));
-//        directoryContent = selectView(selected, directory);
-//        content.addComponent(directoryContent);
-//        content.setExpandRatio(directoryContent, 1);
-
         removeAllComponents();
-        addComponent(buildHeader());
+        addComponent(buildHeader(directory));
         addComponent(buildToolBar(directory));
-        addComponent(buildViewsBar(directory));
         directoryContent = selectView(selected, directory);
         addComponent(directoryContent);
         setExpandRatio(directoryContent, 1);

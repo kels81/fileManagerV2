@@ -69,6 +69,7 @@ public class FileListLayout extends VerticalLayout implements View {
     private final String COL_CONTEXT_MENU = "contextMenu";
 
     private final Object[] COLUMNS_VISIBLES = {COL_ICON, COL_NOMBRE, COL_TAMANIO, COL_MODIFICADO, COL_CONTEXT_MENU};
+    private final Object[] COLUMNS_VISIBLES_MOBILES = {COL_ICON, COL_NOMBRE, COL_CONTEXT_MENU};
     private final String[] COLUMNS_HEADERS = {"", "Nombre", "Tamaño", "Modificado", ""};
     private final String[] DEFAULT_COLLAPSIBLE = {COL_TAMANIO, COL_MODIFICADO};
 
@@ -86,7 +87,7 @@ public class FileListLayout extends VerticalLayout implements View {
         browserResized();
 //        System.out.println("width-->" + Page.getCurrent().getBrowserWindowWidth());
 //        System.out.println("height-->" + Page.getCurrent().getBrowserWindowHeight());
-        
+
         //BUTTON PARA PODER DESCARGAR ARCHIVOS POR MEDIO DEL CONTEXT MENU
         downloadInvisibleButton.setId("DownloadButtonId");
         downloadInvisibleButton.addStyleName("InvisibleButton");
@@ -109,7 +110,6 @@ public class FileListLayout extends VerticalLayout implements View {
 //        table.setPageLength(8);
         table.setImmediate(true);
         table.setSelectable(true);
-//        table.setMultiSelect(true);
         table.addStyleName(ValoTheme.TABLE_BORDERLESS);
         table.addStyleName(ValoTheme.TABLE_NO_STRIPES);
         table.addStyleName(ValoTheme.TABLE_NO_VERTICAL_LINES);
@@ -124,9 +124,8 @@ public class FileListLayout extends VerticalLayout implements View {
         table.setColumnAlignment(COL_CONTEXT_MENU, Align.CENTER);
 
         //PARA HACER RESPONSIVO LA TABLA
-        table.setColumnCollapsingAllowed(true);
-        table.setColumnCollapsible(COL_NOMBRE, false);
-
+        //table.setColumnCollapsingAllowed(false);
+        //table.setColumnCollapsible(COL_NOMBRE, false);
         table.setColumnExpandRatio(COL_NOMBRE, 0.50f);
         table.setColumnExpandRatio(COL_MODIFICADO, 0.20f);
         table.setColumnExpandRatio(COL_TAMANIO, 0.20f);
@@ -242,6 +241,7 @@ public class FileListLayout extends VerticalLayout implements View {
     private Label getFileName() {
         Label lblName = new Label(file.getName());
         lblName.addStyleName(ValoTheme.LABEL_BOLD);
+        lblName.addStyleName("labelName");
         lblName.addStyleName("noselect");
 
         return lblName;
@@ -285,7 +285,6 @@ public class FileListLayout extends VerticalLayout implements View {
     private boolean defaultColumnsVisible() {
         boolean result = true;
         for (String propertyId : DEFAULT_COLLAPSIBLE) {
-//            table.setColumnCollapsingAllowed(true);
             if (table.isColumnCollapsed(propertyId) == Page.getCurrent()
                     .getBrowserWindowWidth() < 800) {
                 result = false;
@@ -297,16 +296,21 @@ public class FileListLayout extends VerticalLayout implements View {
     private void browserResized() {
         // Some columns are collapsed when browser window width gets small
         // enough to make the table fit better.
-        if (defaultColumnsVisible()) {
-            for (String propertyId : DEFAULT_COLLAPSIBLE) {
-                table.setColumnCollapsed(propertyId, Page.getCurrent()
-                        .getBrowserWindowWidth() < 800);
-            }
+//        if (defaultColumnsVisible()) {
+//            for (String propertyId : DEFAULT_COLLAPSIBLE) {
+//                table.setColumnCollapsed(propertyId, Page.getCurrent()
+//                        .getBrowserWindowWidth() < 800);
+//            }
+//        }
+        if (Page.getCurrent().getBrowserWindowWidth() < 800) {
+            table.setVisibleColumns(COLUMNS_VISIBLES_MOBILES);
+        } else {
+            table.setVisibleColumns(COLUMNS_VISIBLES);
         }
     }
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
     }
-    
+
 }

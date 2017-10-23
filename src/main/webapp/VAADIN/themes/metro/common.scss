@@ -494,4 +494,51 @@
         display: none;
     }
 
+    .v-menubar-primary {
+        color: #e7f1f8;
+        font-weight: 400;
+        cursor: default;
+        border-radius: 0px;
+        border: 1px solid #eaeaea;
+        background: #0072C6;
+        padding: 0;
+        text-align: left;
+        &:after {
+            border: inherit;
+            top: -1px;
+            right: -1px;
+            bottom: -1px;
+            left: -1px;
+        }
+        &:focus:after {
+            border: inherit;
+            border-color: #0072C6;
+        }
+        > .v-menubar-menuitem {
+            position: relative;
+            z-index: 1;
+            display: inline-block;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            height: 37px;
+            padding: 0 15px;
+            color: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 0;
+            border: 1px solid #eaeaea;
+            background: #eee;
+            background: transparent;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+            border-width: 0 1px 0 0;
+            border-color: inherit;
+            height: 100%;
+            line-height: inherit;
+            vertical-align: top;
+            text-align: center;
+        }
+    }
+
 }

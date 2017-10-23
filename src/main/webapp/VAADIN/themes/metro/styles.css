@@ -352,25 +352,25 @@
 }
 
 @font-face {
-	font-family: "Source Sans Pro";
-	src: url(../valo/fonts/source-sans-pro/sourcesanspro-light.eot);
-	src: url(../valo/fonts/source-sans-pro/sourcesanspro-light.eot?#iefix) format("embedded-opentype"), url(../valo/fonts/source-sans-pro/sourcesanspro-light.woff) format("woff"), url(../valo/fonts/source-sans-pro/sourcesanspro-light.ttf) format("truetype");
+	font-family: "Open Sans";
+	src: url(../valo/fonts/open-sans/OpenSans-Light-webfont.eot);
+	src: url(../valo/fonts/open-sans/OpenSans-Light-webfont.eot?#iefix) format("embedded-opentype"), url(../valo/fonts/open-sans/OpenSans-Light-webfont.woff) format("woff"), url(../valo/fonts/open-sans/OpenSans-Light-webfont.ttf) format("truetype");
 	font-weight: 300;
 	font-style: normal;
 }
 
 @font-face {
-	font-family: "Source Sans Pro";
-	src: url(../valo/fonts/source-sans-pro/sourcesanspro-regular.eot);
-	src: url(../valo/fonts/source-sans-pro/sourcesanspro-regular.eot?#iefix) format("embedded-opentype"), url(../valo/fonts/source-sans-pro/sourcesanspro-regular.woff) format("woff"), url(../valo/fonts/source-sans-pro/sourcesanspro-regular.ttf) format("truetype");
+	font-family: "Open Sans";
+	src: url(../valo/fonts/open-sans/OpenSans-Regular-webfont.eot);
+	src: url(../valo/fonts/open-sans/OpenSans-Regular-webfont.eot?#iefix) format("embedded-opentype"), url(../valo/fonts/open-sans/OpenSans-Regular-webfont.woff) format("woff"), url(../valo/fonts/open-sans/OpenSans-Regular-webfont.ttf) format("truetype");
 	font-weight: 400;
 	font-style: normal;
 }
 
 @font-face {
-	font-family: "Source Sans Pro";
-	src: url(../valo/fonts/source-sans-pro/sourcesanspro-semibold.eot);
-	src: url(../valo/fonts/source-sans-pro/sourcesanspro-semibold.eot?#iefix) format("embedded-opentype"), url(../valo/fonts/source-sans-pro/sourcesanspro-semibold.woff) format("woff"), url(../valo/fonts/source-sans-pro/sourcesanspro-semibold.ttf) format("truetype");
+	font-family: "Open Sans";
+	src: url(../valo/fonts/open-sans/OpenSans-Semibold-webfont.eot);
+	src: url(../valo/fonts/open-sans/OpenSans-Semibold-webfont.eot?#iefix) format("embedded-opentype"), url(../valo/fonts/open-sans/OpenSans-Semibold-webfont.woff) format("woff"), url(../valo/fonts/open-sans/OpenSans-Semibold-webfont.ttf) format("truetype");
 	font-weight: 600;
 	font-style: normal;
 }
@@ -1570,7 +1570,7 @@ div.v-layout.v-horizontal.v-widget {
 	}
 
 .metro.v-app, .metro.v-app-loading {
-	font: 300 16px/1.55 "Source Sans Pro", sans-serif;
+	font: 300 16px/1.55 "Open Sans", "Helvetica Neue", helvetica, arial, verdana, sans-serif;
 	color: #474747;
 	background-color: #fff;
 	cursor: default;
@@ -13109,6 +13109,56 @@ div.v-layout.v-horizontal.v-widget {
 	display: none;
 }
 
+.metro .v-menubar-primary {
+	color: #e7f1f8;
+	font-weight: 400;
+	cursor: default;
+	border-radius: 0px;
+	border: 1px solid #eaeaea;
+	background: #0072C6;
+	padding: 0;
+	text-align: left;
+}
+
+.metro .v-menubar-primary:after {
+	border: inherit;
+	top: -1px;
+	right: -1px;
+	bottom: -1px;
+	left: -1px;
+}
+
+.metro .v-menubar-primary:focus:after {
+	border: inherit;
+	border-color: #0072C6;
+}
+
+.metro .v-menubar-primary  > .v-menubar-menuitem {
+	position: relative;
+	z-index: 1;
+	display: inline-block;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	height: 37px;
+	padding: 0 15px;
+	color: inherit;
+	font-weight: bold;
+	cursor: pointer;
+	border-radius: 0;
+	border: 1px solid #eaeaea;
+	background: #eee;
+	background: transparent;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	border-width: 0 1px 0 0;
+	border-color: inherit;
+	height: 100%;
+	line-height: inherit;
+	vertical-align: top;
+	text-align: center;
+}
+
 .metro .loginview {
 	background-color: #fff;
 	background-image: -webkit-radial-gradient(50% 50%, circle, #fafafa, #fafafa);
@@ -13228,16 +13278,21 @@ div.v-layout.v-horizontal.v-widget {
 	background-color: #f5f5f5;
 }
 
+.metro .schedule .gridView .mainPanel .frame .lay-test {
+	border: 1px solid;
+}
+
 .metro .schedule .gridView .mainPanel .frame .labelName {
 	font-size: 14px;
-	line-height: 1.2;
-	padding: 0 10px;
+	padding-left: 10px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
 }
 
 .metro .schedule .gridView .mainPanel .frame .labelInfo {
 	font-size: 12px;
-	line-height: 1.2;
-	padding: 0 10px;
+	padding-left: 10px;
 }
 
 .metro .schedule .gridView[width-range~="0-600px"] .mainPanel {
@@ -13375,11 +13430,7 @@ div.v-layout.v-horizontal.v-widget {
 	border-left: 1px solid #f8f8f8;
 }
 
-.metro .v-table {
-	background: #fff;
-}
-
-.metro .v-table-table {
+.metro .v-table, .metro .v-table-table {
 	background: #fff;
 }
 
@@ -13419,6 +13470,14 @@ div.v-layout.v-horizontal.v-widget {
 	-moz-user-select: none;
 	-khtml-user-select: none;
 	-webkit-user-select: none;
+}
+
+.metro .labelName {
+	font-size: 14px;
+	line-height: 1.5;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
 }
 
 .metro .v-menubar-btn-contextmenu {

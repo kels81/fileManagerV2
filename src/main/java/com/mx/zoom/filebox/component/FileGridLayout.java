@@ -5,7 +5,9 @@
  */
 package com.mx.zoom.filebox.component;
 
+import com.google.common.eventbus.Subscribe;
 import com.mx.zoom.filebox.component.contextmenu.ButtonContextMenu;
+import com.mx.zoom.filebox.event.DashboardEvent.BrowserResizeEvent;
 import com.mx.zoom.filebox.logic.ScheduleDirectoryLogic;
 import com.mx.zoom.filebox.logic.ScheduleFileLogic;
 import com.mx.zoom.filebox.utils.Components;
@@ -49,10 +51,9 @@ public class FileGridLayout extends CssLayout {
     private File file;
     private CssLayout mainPanel;
 
-    private Label fileName;
-    private Label numberOfElementsAndFileSize;
+    private Label lblName;
+    private Label lblNumberOfElementsAndFileSize;
 
-    private final int widthPage;
     private final Button downloadInvisibleButton = new Button();
     private final Components component = new Components();
 
@@ -62,11 +63,9 @@ public class FileGridLayout extends CssLayout {
     public FileGridLayout(ScheduleFileLogic mosaicoFileLogic, ScheduleDirectoryLogic mosaicoDirectoryLogic, File file) {
         this.viewLogicFile = mosaicoFileLogic;
         this.viewLogicDirectory = mosaicoDirectoryLogic;
-        this.widthPage = Page.getCurrent().getBrowserWindowWidth();
 
         addStyleName("gridView");
         setSizeFull();
-//        setWidth(100.0f, Sizeable.Unit.PERCENTAGE);
         Responsive.makeResponsive(this);
 
         File currentDir = new File(file.getAbsolutePath());
@@ -76,7 +75,7 @@ public class FileGridLayout extends CssLayout {
             this.file = file_;
             addComponent(buildGrid(file_));
         }
-
+        
 //        System.out.println("width-->" + Page.getCurrent().getBrowserWindowWidth());
 //        System.out.println("height-->" + Page.getCurrent().getBrowserWindowHeight());
 
@@ -87,7 +86,6 @@ public class FileGridLayout extends CssLayout {
     }
 
     private Component buildGrid(File file) {
-//        this.file = file;
         mainPanel = new CssLayout();
         mainPanel.addStyleName("mainPanel");
         mainPanel.addComponent(buildFrame(file));
@@ -97,10 +95,11 @@ public class FileGridLayout extends CssLayout {
 
     private HorizontalLayout buildFrame(File file_) {
         frame = new HorizontalLayout();
+        frame.setSizeFull();
         frame.addStyleName("frame");
         frame.setMargin(true);
+        frame.setSpacing(true);
         frame.addStyleName(ValoTheme.LAYOUT_CARD);
-        frame.setWidth(100.0f, Sizeable.Unit.PERCENTAGE);
         frame.addLayoutClickListener(new LayoutClickListener() {
             @Override
             public void layoutClick(LayoutEvents.LayoutClickEvent event) {
@@ -116,10 +115,12 @@ public class FileGridLayout extends CssLayout {
                 }
             }
         });
-        frame.addComponent(buildMosaico());
-
+        
+        Component mosaico = buildMosaico(); 
         MenuBar btnContextMenu = new ButtonContextMenu(downloadInvisibleButton, file_, viewLogicFile, viewLogicDirectory);
-        frame.addComponent(btnContextMenu);
+        
+        frame.addComponents(mosaico, btnContextMenu);
+        frame.setExpandRatio(mosaico, 1.0f);
         frame.setComponentAlignment(btnContextMenu, Alignment.TOP_RIGHT);
 
 //        ContextMenu contextMenu = new ContextMenu(this, false);
@@ -129,24 +130,22 @@ public class FileGridLayout extends CssLayout {
     }
 
     private HorizontalLayout buildMosaico() {
-        mosaicoLayout = new HorizontalLayout();
-        //mosaicoLayout.setSpacing(true);
-        //mosaicoLayout.setDescription(file.getName());
-
         Component icon = buildIcon();
         Component details = buildFileDetails();
-        mosaicoLayout.addComponent(icon);
+        
+        mosaicoLayout = new HorizontalLayout();
+        mosaicoLayout.setSizeFull();
+        //mosaicoLayout.setDescription(file.getName());
+        mosaicoLayout.addComponents(icon, details);
         mosaicoLayout.setComponentAlignment(icon, Alignment.MIDDLE_CENTER);
-        mosaicoLayout.addComponent(details);
-        mosaicoLayout.setExpandRatio(icon, 0.30f);
-        mosaicoLayout.setExpandRatio(details, 0.70f);
+        mosaicoLayout.setExpandRatio(details, 1.0f);
 
         return mosaicoLayout;
     }
 
     private Image buildIcon() {
         icon = new Image(null, getIconExtension());
-        icon.setWidth((file.isDirectory() ? 48.0f : 40.0f), Unit.PIXELS);
+        icon.setWidth((file.isDirectory() ? 43.0f : 40.0f), Unit.PIXELS);
         icon.setHeight((file.isDirectory() ? 43.0f : 49.0f), Unit.PIXELS);
         return icon;
     }
@@ -187,23 +186,19 @@ public class FileGridLayout extends CssLayout {
         Component numberOfElements = getNumberOfElementsAndFileSize();
 
         fileDetails = new VerticalLayout();
-        fileDetails.addComponent(fileName);
+        fileDetails.addComponents(fileName, numberOfElements);
         fileDetails.setComponentAlignment(fileName, Alignment.BOTTOM_LEFT);
-        fileDetails.addComponent(numberOfElements);
         fileDetails.setComponentAlignment(numberOfElements, Alignment.BOTTOM_LEFT);
         return fileDetails;
     }
 
     private Label getFileName() {
         String name = file.getName();
-        name = (widthPage >= 1200 && widthPage < 1300 ? (name.length() > 19 ? name.substring(0, 16) + "..." : name)
-                : widthPage > 1300 ? (name.length() > 20 ? name.substring(0, 17) + "..." : name) : name);
-        fileName = new Label(name);
-        fileName.addStyleName("labelName");
-        fileName.addStyleName("noselect");
-        fileName.addStyleName(ValoTheme.LABEL_BOLD);
-
-        return fileName;
+        lblName = new Label(name);
+        lblName.addStyleName("labelName");
+        lblName.addStyleName("noselect");
+        lblName.addStyleName(ValoTheme.LABEL_BOLD);
+        return lblName;
     }
 
     private Label getNumberOfElementsAndFileSize() {
@@ -216,12 +211,12 @@ public class FileGridLayout extends CssLayout {
                                 ? "vacío" : " elemento")
                 : fileSizeDisplay);
 
-        numberOfElementsAndFileSize = new Label(label);
-        numberOfElementsAndFileSize.addStyleName("labelInfo");
-        numberOfElementsAndFileSize.addStyleName("noselect");
-        numberOfElementsAndFileSize.addStyleName(ValoTheme.LABEL_TINY);
+        lblNumberOfElementsAndFileSize = new Label(label);
+        lblNumberOfElementsAndFileSize.addStyleName("labelInfo");
+        lblNumberOfElementsAndFileSize.addStyleName("noselect");
+        lblNumberOfElementsAndFileSize.addStyleName(ValoTheme.LABEL_TINY);
 
-        return numberOfElementsAndFileSize;
+        return lblNumberOfElementsAndFileSize;
     }
-
+    
 }

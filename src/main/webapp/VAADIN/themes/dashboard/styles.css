@@ -11777,16 +11777,21 @@ div.v-layout.v-horizontal.v-widget {
 	background-color: #f5f5f5;
 }
 
+.dashboard .schedule .gridView .mainPanel .frame .lay-test {
+	border: 1px solid;
+}
+
 .dashboard .schedule .gridView .mainPanel .frame .labelName {
 	font-size: 14px;
-	line-height: 1.2;
-	padding: 0 10px;
+	padding-left: 10px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
 }
 
 .dashboard .schedule .gridView .mainPanel .frame .labelInfo {
 	font-size: 12px;
-	line-height: 1.2;
-	padding: 0 10px;
+	padding-left: 10px;
 }
 
 .dashboard .schedule .gridView[width-range~="0-600px"] .mainPanel {
@@ -11924,11 +11929,7 @@ div.v-layout.v-horizontal.v-widget {
 	border-left: 1px solid #f8f8f8;
 }
 
-.dashboard .v-table {
-	background: #fff;
-}
-
-.dashboard .v-table-table {
+.dashboard .v-table, .dashboard .v-table-table {
 	background: #fff;
 }
 
@@ -11968,6 +11969,14 @@ div.v-layout.v-horizontal.v-widget {
 	-moz-user-select: none;
 	-khtml-user-select: none;
 	-webkit-user-select: none;
+}
+
+.dashboard .labelName {
+	font-size: 14px;
+	line-height: 1.5;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
 }
 
 .dashboard .v-menubar-btn-contextmenu {

@@ -120,7 +120,7 @@ public class Components {
     public MenuBar createMenuBar() {
         MenuBar menu = new MenuBar();
         menu.addStyleName(ValoTheme.MENUBAR_SMALL);
-        menu.addStyleName("color1");    //like primary
+        menu.addStyleName("primary");
         return menu;
     }
     
