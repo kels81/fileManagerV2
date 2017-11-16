@@ -5,7 +5,7 @@
  */
 package com.mx.zoom.filebox.logic;
 
-import com.mx.zoom.filebox.component.EmailWindow;
+import com.mx.zoom.filebox.component.window.EmailWindow;
 import com.vaadin.ui.Component;
 import java.io.Serializable;
 

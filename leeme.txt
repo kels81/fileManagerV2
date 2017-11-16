@@ -1,0 +1,9 @@
+[ cmd ]
+
+Para iniciar servicio de libreoffice.
+
+1.- cd C:\Program Files (x86)\LibreOffice 5\program
+
+2.- soffice -headless -accept="socket,host=127.0.0.1,port=8100;urp;" -nofirststartwizard
+
+Ya esta listo el servicio para usarlo con la aplicación.

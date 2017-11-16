@@ -11649,8 +11649,8 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .dashboard .directorywindow {
-	max-height: 480px;
-	width: 560px;
+	max-height: 720px;
+	width: 960px;
 	max-width: 90%;
 }
 

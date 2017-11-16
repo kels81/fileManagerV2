@@ -2,7 +2,7 @@ package com.mx.zoom.filebox.view;
 
 
 import com.google.common.eventbus.Subscribe;
-import com.mx.zoom.filebox.component.ProfilePreferencesWindow;
+import com.mx.zoom.filebox.component.window.ProfilePreferencesWindow;
 import com.mx.zoom.filebox.domain.User;
 import com.mx.zoom.filebox.event.DashboardEvent.PostViewChangeEvent;
 import com.mx.zoom.filebox.event.DashboardEvent.ProfileUpdatedEvent;

@@ -1,14 +1,13 @@
 package com.mx.zoom.filebox.view.schedule;
 
-import com.mx.zoom.filebox.component.EmailWindow;
+import com.mx.zoom.filebox.component.window.EmailWindow;
 import com.mx.zoom.filebox.component.FileGridLayout;
 import com.mx.zoom.filebox.component.FileListLayout;
-import com.mx.zoom.filebox.component.NewFolderWindow;
+import com.mx.zoom.filebox.component.window.NewFolderWindow;
 import com.mx.zoom.filebox.logic.ScheduleDirectoryLogic;
 import com.mx.zoom.filebox.logic.ScheduleFileLogic;
 import com.mx.zoom.filebox.utils.Components;
 import com.mx.zoom.filebox.utils.Constantes;
-import com.mx.zoom.filebox.utils.Notifications;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
@@ -22,8 +21,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -34,8 +31,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import pl.exsio.plupload.Plupload;
-import pl.exsio.plupload.PluploadError;
-import pl.exsio.plupload.PluploadFile;
 
 @SuppressWarnings("serial")
 public final class FilesView extends VerticalLayout implements View {
@@ -53,8 +48,6 @@ public final class FilesView extends VerticalLayout implements View {
     private HorizontalLayout viewBar;
     private HorizontalLayout mainButtons;
     private HorizontalLayout viewButtons;
-    private final ProgressBar progressBar = new ProgressBar(0.0f);
-    private final Notifications notification = new Notifications();
 
     private final ScheduleFileLogic viewLogicFile = new ScheduleFileLogic(this);
     private final ScheduleDirectoryLogic viewLogicDirectory = new ScheduleDirectoryLogic(this);
@@ -76,9 +69,6 @@ public final class FilesView extends VerticalLayout implements View {
         addComponent(directoryContent);
         setExpandRatio(directoryContent, 1);
 
-        //progressBar.setCaption("Progress");
-        //addComponent(progressBar);
-     
         Responsive.makeResponsive(this);
 //        Page.getCurrent().getStyles().add(".v-verticallayout {border: 1px solid blue;} .v-verticallayout .v-slot {border: 1px solid red;}");
     }
@@ -149,8 +139,9 @@ public final class FilesView extends VerticalLayout implements View {
         mainButtons.setSpacing(true);
 
         // CARGAR ARCHIVO
-        Plupload btnUploader = uploadContents(directory);
+        Plupload btnUploader = viewLogicFile.uploadFile(directory);
 
+        //MENU BAR
         MenuBar menubar = component.createMenuBar();
         MenuBar.MenuItem menu = menubar.addItem("Nuevo", null);
         menu.setIcon(FontAwesome.PLUS);
@@ -161,6 +152,7 @@ public final class FilesView extends VerticalLayout implements View {
             w.focus();
         });
 
+        //EMAIL
         Button btnEmail = component.createButtonPrimary("Email");
         btnEmail.setIcon(FontAwesome.ENVELOPE_O);
         btnEmail.addClickListener((ClickEvent event) -> {
@@ -272,95 +264,6 @@ public final class FilesView extends VerticalLayout implements View {
         directoryContent = selectView(selected, directory);
         addComponent(directoryContent);
         setExpandRatio(directoryContent, 1);
-    }
-
-    private Plupload uploadContents(File directory) {
-
-        String uploadPath = directory.getAbsolutePath();
-        Plupload uploader = new Plupload("Cargar", FontAwesome.UPLOAD);
-        //uploader.addFilter(new PluploadFilter("music", "mp3, flac"));
-        uploader.setPreventDuplicates(true);
-        uploader.addStyleName(ValoTheme.BUTTON_PRIMARY);
-        uploader.addStyleName(ValoTheme.BUTTON_SMALL);
-        uploader.setUploadPath(uploadPath);
-        uploader.setMaxFileSize("15mb");
-
-//show notification after file is uploaded
-        uploader.addFileUploadedListener(new Plupload.FileUploadedListener() {
-            @Override
-            public void onFileUploaded(PluploadFile file) {
-
-                /**
-                 * CAMBIAR EL NOMBRE DEL ARCHIVO QUE SE SUBE, YA QUE NO RESPETA
-                 * EL NOMBRE DEL ARCHIVO ORIGINAL
-                 */
-                File uploadedFile = (File) file.getUploadedFile();
-                // NOMBRE CORRECTO
-                String realName = file.getName();
-                System.out.println("realName = " + realName);
-                // NOMBRE INCORRECTO
-                String falseName = uploadedFile.getName();
-                // PATH DEL ARCHIVO
-                String pathFile = uploadedFile.getAbsolutePath();
-                pathFile = pathFile.substring(0, pathFile.lastIndexOf("\\"));
-                System.out.println("pathFile = " + pathFile);
-                // SE CREAN LOS OBJETIPOS DE TIPO FILE DE CADA UNO
-                File fileFalse = new File(pathFile + "\\" + falseName);
-                File fileReal = new File(pathFile + "\\" + realName);
-                // SE REALIZA EL CAMBIO DE NOMBRE DEL ARCHIVO
-                boolean cambio = fileFalse.renameTo(fileReal);
-
-                // SE RECARGA LA PAGINA, PARA MOSTRAR EL ARCHIVO CARGADO
-                cleanAndDisplay(new File(uploadPath));
-                notification.createSuccess("Se cargó el archivo: " + file.getName());
-            }
-        });
-
-//update upload progress
-        uploader.addUploadProgressListener(new Plupload.UploadProgressListener() {
-            @Override
-            public void onUploadProgress(PluploadFile file) {
-
-                progressBar.setWidth("128px");
-                //progressBar.setStyleName(ValoTheme.PROGRESSBAR_POINT);
-                progressBar.setVisible(true);
-
-                progressBar.setValue(new Long(file.getPercent()).floatValue() / 100);
-                progressBar.setDescription(file.getPercent() + "%");
-
-                System.out.println("I'm uploading " + file.getName()
-                        + "and I'm at " + file.getPercent() + "%");
-            }
-        });
-
-//autostart the uploader after addind files
-        uploader.addFilesAddedListener(new Plupload.FilesAddedListener() {
-            @Override
-            public void onFilesAdded(PluploadFile[] files) {
-                progressBar.setValue(0f);
-                progressBar.setVisible(true);
-                uploader.start();
-            }
-        });
-
-//notify, when the upload process is completed
-        uploader.addUploadCompleteListener(new Plupload.UploadCompleteListener() {
-            @Override
-            public void onUploadComplete() {
-                System.out.println("upload is completed!");
-            }
-        });
-
-//handle errors
-        uploader.addErrorListener(new Plupload.ErrorListener() {
-            @Override
-            public void onError(PluploadError error) {
-                Notification.show("There was an error: "
-                        + error.getMessage(), Notification.Type.ERROR_MESSAGE);
-            }
-        });
-
-        return uploader;
     }
 
     private String setStyle(Boolean selected) {

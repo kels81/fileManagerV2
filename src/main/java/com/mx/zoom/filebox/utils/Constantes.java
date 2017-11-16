@@ -16,6 +16,10 @@ public class Constantes {
     public static final String SEPARADOR = "\\\\";
     public static final String ROOT_DIRECTORY = getRootDirectory();
     public static final String PATH_BASE = getPathBase();
+    public static final String OUTPUT_PDF = "C:\\Test\\";
+    
+    public static final int OPENOFFICE_PORT = 8100;
+    public static final String OPENOFFICE_HOST = "localhost";
 
     private static String getRootDirectory() {
         String[] directories = ROOT_PATH.split(SEPARADOR);

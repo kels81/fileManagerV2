@@ -5,18 +5,15 @@
  */
 package com.mx.zoom.filebox.component;
 
-import com.google.common.eventbus.Subscribe;
 import com.mx.zoom.filebox.component.contextmenu.ButtonContextMenu;
-import com.mx.zoom.filebox.event.DashboardEvent.BrowserResizeEvent;
+import com.mx.zoom.filebox.component.window.ViewerWindow;
 import com.mx.zoom.filebox.logic.ScheduleDirectoryLogic;
 import com.mx.zoom.filebox.logic.ScheduleFileLogic;
 import com.mx.zoom.filebox.utils.Components;
 import com.mx.zoom.filebox.utils.FileFormats;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
-import com.vaadin.server.Page;
 import com.vaadin.server.Responsive;
-import com.vaadin.server.Sizeable;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -26,8 +23,9 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
-import com.vaadin.ui.Notification;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 import java.io.File;
 import java.util.ArrayList;
@@ -107,10 +105,10 @@ public class FileGridLayout extends CssLayout {
                     if (file_.isDirectory()) {
                         viewLogicFile.cleanAndDisplay(file_);
                     } else if (file_.isFile()) {
-                        Notification.show("Ver archivo: " + file_.getName());
-//                        Window w = new ViewerWindow(file);;
-//                        UI.getCurrent().addWindow(w);
-//                        w.focus();
+                        //Notification.show("Ver archivo: " + file_.getName());
+                        Window w = new ViewerWindow(file_);
+                        UI.getCurrent().addWindow(w);
+                        w.focus();
                     }
                 }
             }
@@ -135,7 +133,7 @@ public class FileGridLayout extends CssLayout {
         
         mosaicoLayout = new HorizontalLayout();
         mosaicoLayout.setSizeFull();
-        //mosaicoLayout.setDescription(file.getName());
+        mosaicoLayout.setDescription(file.getName());
         mosaicoLayout.addComponents(icon, details);
         mosaicoLayout.setComponentAlignment(icon, Alignment.MIDDLE_CENTER);
         mosaicoLayout.setExpandRatio(details, 1.0f);

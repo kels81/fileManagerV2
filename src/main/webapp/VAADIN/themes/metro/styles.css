@@ -12874,6 +12874,29 @@ div.v-layout.v-horizontal.v-widget {
 	padding-right: 37px;
 }
 
+.metro .viewerwindow {
+	max-height: 880px;
+	width: 1120px;
+	max-width: 90%;
+}
+
+.metro .viewerwindow .v-window-outerheader {
+	background-color: inherit;
+}
+
+.metro .pdf-viewer .pdf-viewer-canvas.dragscroll {
+	pointer: move;
+	width: 102% !important;
+}
+
+.metro #outerContainer #mainContainer div.toolbar {
+	display: none !important;
+}
+
+.metro #outerContainer #mainContainer #viewerContainer {
+	top: 0 !important;
+}
+
 .metro .vaadin-chart {
 	transform: translateZ(0);
 }
@@ -13002,7 +13025,6 @@ div.v-layout.v-horizontal.v-widget {
 	border-radius: 4px;
 	border-style: solid;
 	border-width: 1px;
-	box-shadow: 0 1px 0 #4d98e6 inset, 0 -1px 0 #166bca inset, 0 2px 3px rgba(0, 0, 0, 0.05);
 	color: #ecf2f8;
 	cursor: default;
 	font-weight: 400;

@@ -11,9 +11,9 @@ package com.mx.zoom.filebox.utils;
  */
 public enum FileFormats {
 
-    WORD(new String[]{"doc", "docx", "dot", "dotx", "docm", "dotm", "rtf"}),
-    EXCEL(new String[]{"xls", "xlsx", "xlsm", "xlsb"}),
-    POWERPOINT(new String[]{"ppt", "pptx", "pps", "ppsx"}),
+    WORD(new String[]{"doc", "docx", "dot", "dotx", "docm", "dotm", "rtf", "odt"}),
+    EXCEL(new String[]{"xls", "xlsx", "xlsm", "xlsb", "ods"}),
+    POWERPOINT(new String[]{"ppt", "pptx", "pps", "ppsx", "odp"}),
     VISIO(new String[]{"vsd", "vdx", "vss", "vsx", "vst", "vtx", "vsdx", "vdw"}),   //NO HAY ICON
     PROJECT(new String[]{"mpp", "mpt"}),    //NO HAY ICON
     IMAGEN(new String[]{"bmp", "gif", "jpg", "png", "tiff", "multi-page tiff", "webp"}),

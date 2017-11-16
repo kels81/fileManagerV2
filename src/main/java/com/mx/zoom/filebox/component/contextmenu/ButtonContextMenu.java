@@ -5,9 +5,9 @@
  */
 package com.mx.zoom.filebox.component.contextmenu;
 
-import com.mx.zoom.filebox.component.ConfirmWindow;
-import com.mx.zoom.filebox.component.DirectoryTreeFolderWindow;
-import com.mx.zoom.filebox.component.EditWindow;
+import com.mx.zoom.filebox.component.window.ConfirmWindow;
+import com.mx.zoom.filebox.component.window.DirectoryTreeFolderWindow;
+import com.mx.zoom.filebox.component.window.EditWindow;
 import com.mx.zoom.filebox.logic.ScheduleDirectoryLogic;
 import com.mx.zoom.filebox.logic.ScheduleFileLogic;
 import com.vaadin.server.FontAwesome;
