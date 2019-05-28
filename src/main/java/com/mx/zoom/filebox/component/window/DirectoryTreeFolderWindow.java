@@ -118,9 +118,10 @@ public class DirectoryTreeFolderWindow extends Window {
     private Component buildTree() {
         root = new VerticalLayout();
 
-        Container generateContainer = getDirectoryContainer(origenPath);
+//        Container generateContainer = getDirectoryContainer(origenPath);
         tree = new Tree();
-        tree.setContainerDataSource(generateContainer);
+        tree.setSizeFull();
+        tree.setContainerDataSource(getDirectoryContainer(origenPath));
         tree.setItemCaptionPropertyId("caption");
         tree.setItemIconPropertyId("icon");
         tree.setImmediate(true);
