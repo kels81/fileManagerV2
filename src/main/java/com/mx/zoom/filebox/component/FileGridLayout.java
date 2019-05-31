@@ -91,7 +91,7 @@ public class FileGridLayout extends CssLayout {
         return mainPanel;
     }
 
-    private HorizontalLayout buildFrame(File file_) {
+    private HorizontalLayout buildFrame(final File file_) {
         frame = new HorizontalLayout();
         frame.setSizeFull();
         frame.addStyleName("frame");
