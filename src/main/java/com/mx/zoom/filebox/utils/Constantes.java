@@ -12,7 +12,7 @@ package com.mx.zoom.filebox.utils;
 public class Constantes {
 
     //CARPETA DE ARCHIVOS PC
-    public static final String ROOT_PATH = "C:\\Users\\Edrd\\Documents\\GitHub\\fileManagerV2\\Archivos";
+    public static final String ROOT_PATH = "C:\\Users\\ecortesh\\Documents\\GitHub\\fileManagerV2\\Archivos";
     public static final String SEPARADOR = "\\\\";
     public static final String ROOT_DIRECTORY = getRootDirectory();
     public static final String PATH_BASE = getPathBase();

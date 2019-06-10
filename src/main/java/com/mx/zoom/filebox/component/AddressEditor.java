@@ -68,7 +68,8 @@ public class AddressEditor extends CssLayout implements LayoutClickListener {
                 System.out.println("entra aqui");
                 Contactos con = tokenId instanceof Contactos
                         ? (Contactos) tokenId
-                        : new Querys().existContacto(tokenId.toString().trim());
+                        //: new Querys().existContacto(tokenId.toString().trim());
+                        : null;
 
                 if (!cb.containsId(con)) {
                     getUI().addWindow(new EditContactWindow(tokenId.toString().trim(), this));
@@ -78,7 +79,6 @@ public class AddressEditor extends CssLayout implements LayoutClickListener {
             }
 
             @Override
-
             protected void configureTokenButton(Object tokenId, Button button) {
                 super.configureTokenButton(tokenId, button);
                 // custom caption
@@ -90,7 +90,8 @@ public class AddressEditor extends CssLayout implements LayoutClickListener {
         tokenField.setInputWidth(250.0f, Unit.PIXELS);
         tokenField.setValidationVisible(true);
         tokenField.setRememberNewTokens(false);
-        tokenField.setContainerDataSource(tokens);
+        //tokenField.setContainerDataSource(tokens);
+        tokenField.setContainerDataSource(null);
         tokenField.setImmediate(true);
         //tokenField.setFilteringMode(FilteringMode.CONTAINS); // suggest
         tokenField.setTokenCaptionPropertyId("cNombre"); // use name in input

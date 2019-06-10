@@ -264,21 +264,25 @@
             <groupId>filebox.test</groupId>
             <artifactId>jpdf2html</artifactId>
             <version>1.0.0</version>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>filebox.test</groupId>
             <artifactId>aspose-cells</artifactId>
-            <version>17.10.0</version>
+            <version>17.10</version>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>filebox.test</groupId>
             <artifactId>aspose-words</artifactId>
-            <version>17.9.0</version>
+            <version>17.9</version>
+            <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>file</groupId>
+            <groupId>filebox.test</groupId>
             <artifactId>aspose-slides</artifactId>
-            <version>17.8.0</version>
+            <version>17.8</version>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>com.artofsolving</groupId>

@@ -21,8 +21,8 @@ import javax.persistence.Persistence;
  */
 public class DummyDataProvider implements DataProvider {
 
-    EntityManagerFactory emf = Persistence.createEntityManagerFactory("file_manager");
-    EntityManager em = emf.createEntityManager();
+    //EntityManagerFactory emf = Persistence.createEntityManagerFactory("file_manager");
+    //EntityManager em = emf.createEntityManager();
 
     /**
      * Initialize the data for this application.

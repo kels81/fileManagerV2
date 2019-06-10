@@ -20,38 +20,38 @@ import javax.persistence.Query;
  */
 public class Querys {
 
-    EntityManagerFactory emf = Persistence.createEntityManagerFactory("file_manager");
-    EntityManager em = emf.createEntityManager();
+    //EntityManagerFactory emf = Persistence.createEntityManagerFactory("file_manager");
+    //EntityManager em = emf.createEntityManager();
 
     public Container containerContactos() {
         BeanItemContainer<Contactos> container = new BeanItemContainer<>(Contactos.class);
 
-        ArrayList<Contactos> listUsuarios = this.getContactos();
-
-        for (Contactos contact : listUsuarios) {
-            container.addBean(contact);
-        }
+//        ArrayList<Contactos> listUsuarios = this.getContactos();
+//
+//        for (Contactos contact : listUsuarios) {
+//            container.addBean(contact);
+//        }
 
         return container;
     }
 
-    public ArrayList<Contactos> getContactos() {
-        Query qry = em.createQuery("SELECT c FROM Contactos c");
-
-        ArrayList<Contactos> contactos = new ArrayList<Contactos>(qry.getResultList());
-
-        return contactos;
-    }
-
-    public Contactos existContacto(String email) {
-        try {
-            Query qry = em.createQuery("SELECT c FROM Contactos c WHERE c.cEmail = '" + email + "'");
-            Contactos entidad = (Contactos) (qry.getSingleResult());
-            return entidad;
-        } catch (Exception e) {
-            return null;
-        }
-
-    }
+//    public ArrayList<Contactos> getContactos() {
+//        Query qry = em.createQuery("SELECT c FROM Contactos c");
+//
+//        ArrayList<Contactos> contactos = new ArrayList<Contactos>(qry.getResultList());
+//
+//        return contactos;
+//    }
+//
+//    public Contactos existContacto(String email) {
+//        try {
+//            Query qry = em.createQuery("SELECT c FROM Contactos c WHERE c.cEmail = '" + email + "'");
+//            Contactos entidad = (Contactos) (qry.getSingleResult());
+//            return entidad;
+//        } catch (Exception e) {
+//            return null;
+//        }
+//
+//    }
 
 }
